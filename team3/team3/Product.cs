@@ -83,4 +83,43 @@ namespace team3
             conn.Close();
         }
     }
+    public class Category
+    {
+        public int categoryid { get; private set; }
+        public int categoryname { get; private set; }
+        public int categoryproduct { get; private set; }
+
+        public void AddCategory(int categoryid, string categoryname, string categoryproduct)
+        {
+            string dbHost = "127.0.0.1";//資料庫位址
+            string dbUser = "root";//資料庫使用者帳號
+            string dbPass = "AgileTeam3";//資料庫使用者密碼
+            string dbName = "Team3";//資料庫名稱
+
+            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlCommand command = conn.CreateCommand();
+            conn.Open();
+
+            command.CommandText = "Insert into category(categoryid,categoryname,categoryproduct) values(" + categoryid + ",'" + categoryname + "','" + categoryproduct + "')";
+            command.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        public void AddProduct()
+        {
+
+        }
+
+        public void DeleteCategory()
+        {
+
+        }
+
+        public void DeleteProduct()
+        {
+
+        }
+    }
 }
