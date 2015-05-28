@@ -93,5 +93,12 @@ namespace team3
             Product info = new Product();
             info.AddProduct(0, 3, "APPLE Macbook Air", 19999, "456.jpg", "APPLE 就是潮", 69);
         }
+
+        [TestMethod]
+        public void AddCategory()
+        {
+            Category addCategory = new Category();
+            addCategory.AddCategory(3, "電腦", "ASUS ZENBOOK UX305; APPLE Macbook Air");
+        }
     }
 }
