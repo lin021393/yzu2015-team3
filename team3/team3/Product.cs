@@ -22,13 +22,7 @@ namespace team3
         
         public List<string> ShowProduct(int productID)
         {
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlConnection conn = DatabaseConnection.GetConnection();
             MySqlCommand command = conn.CreateCommand();
             conn.Open(); 
           
@@ -80,7 +74,7 @@ namespace team3
             command.CommandText = "Insert into product(productid,categoryid,productname,productprice,productimages,description,productremain) values(" + productid + "," + categoryid + ",'" + productname + "'," + productprice + ",'" + productimages + "','" + describes + "'," + productremain + ")";
             command.ExecuteNonQuery();
 
-            conn.Close();
+            DatabaseConnection.RemoveConnection(conn);
         }
     }
     public class Category
@@ -91,21 +85,16 @@ namespace team3
 
         public void AddCategory(int categoryId, string categoryName)
         {
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
             string categoryProduct = "0";
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
+
+            MySqlConnection conn = DatabaseConnection.GetConnection();
             MySqlCommand command = conn.CreateCommand();
             conn.Open();
 
             command.CommandText = "Insert into category(categoryid,categoryname,categoryproduct) values(" + categoryId + ",'" + categoryName + "','" + categoryProduct + "')";
             command.ExecuteNonQuery();
 
-            conn.Close();
+            DatabaseConnection.RemoveConnection(conn);
         }
 
         public void AddProduct(int CategoryId, int ProductId)
@@ -150,13 +139,7 @@ namespace team3
 
         public void DeleteCategory(int CategoryId)
         {
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlConnection conn = DatabaseConnection.GetConnection();
             MySqlCommand command = conn.CreateCommand();
             conn.Open();
 
@@ -168,18 +151,12 @@ namespace team3
             }
 
 
-            conn.Close();
+            DatabaseConnection.RemoveConnection(conn);
         }
 
         public void DeleteProduct(int CategoryId, int ProductId)
         {
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlConnection conn = DatabaseConnection.GetConnection();
             MySqlCommand command = conn.CreateCommand();
             conn.Open();
 
@@ -206,20 +183,14 @@ namespace team3
             command.CommandText = "Update category SET categoryproduct='" + NewCategoryProduct + "' WHERE categoryid = " + CategoryId.ToString();
             command.ExecuteNonQuery();
 
-            conn.Close();
+            DatabaseConnection.RemoveConnection(conn);
         }
 
         public List<int> ShowProductList(int CategoryId)
         {
             List<int> ProductList = new List<int>();
 
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlConnection conn = DatabaseConnection.GetConnection();
             MySqlCommand command = conn.CreateCommand();
             conn.Open();
 
@@ -239,7 +210,8 @@ namespace team3
                 }
             }
             data.Close();
-            conn.Close();
+
+            DatabaseConnection.RemoveConnection(conn);
 
              string[] sArray1 = products.Split(new char[1] { ',' });
 
