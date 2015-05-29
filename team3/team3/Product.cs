@@ -96,7 +96,7 @@ namespace team3
             string dbPass = "AgileTeam3";//資料庫使用者密碼
             string dbName = "Team3";//資料庫名稱
 
-            string categoryProduct = null;
+            string categoryProduct = "0";
             string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
             MySqlConnection conn = new MySqlConnection(connStr);
             MySqlCommand command = conn.CreateCommand();
@@ -131,7 +131,7 @@ namespace team3
 
             categoryProduct.Sort();
 
-            string NewCategoryProduct = "";
+            string NewCategoryProduct = null;
 
             for (int i = 0; i < categoryProduct.Count(); i++ )
             {
@@ -148,14 +148,65 @@ namespace team3
             
         }
 
-        public void DeleteCategory()
+        public void DeleteCategory(int CategoryId)
         {
+            string dbHost = "127.0.0.1";//資料庫位址
+            string dbUser = "root";//資料庫使用者帳號
+            string dbPass = "AgileTeam3";//資料庫使用者密碼
+            string dbName = "Team3";//資料庫名稱
 
+            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlCommand command = conn.CreateCommand();
+            conn.Open();
+
+            List<int> categoryProduct = ShowProductList(CategoryId);
+
+            if (categoryProduct.Count() == 1)
+            {
+                command.CommandText = "Delete FROM category WHERE CategoryId='" + CategoryId.ToString() + "'";
+            }
+
+
+            conn.Close();
         }
 
-        public void DeleteProduct()
+        public void DeleteProduct(int CategoryId, int ProductId)
         {
+            string dbHost = "127.0.0.1";//資料庫位址
+            string dbUser = "root";//資料庫使用者帳號
+            string dbPass = "AgileTeam3";//資料庫使用者密碼
+            string dbName = "Team3";//資料庫名稱
 
+            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlCommand command = conn.CreateCommand();
+            conn.Open();
+
+            List<int> categoryProduct = ShowProductList(CategoryId);
+
+            if(categoryProduct.Contains(ProductId) == false)
+            {
+            }
+            else
+            {
+                categoryProduct.Remove(ProductId);
+            }
+
+            string NewCategoryProduct = null;
+
+            for (int i = 0; i < categoryProduct.Count(); i++ )
+            {
+                if (i != 0)
+                    NewCategoryProduct += ",";
+                NewCategoryProduct += categoryProduct[i].ToString();
+            }
+            
+
+            command.CommandText = "Update category SET categoryproduct='" + NewCategoryProduct + "' WHERE categoryid = " + CategoryId.ToString();
+            command.ExecuteNonQuery();
+
+            conn.Close();
         }
 
         public List<int> ShowProductList(int CategoryId)
@@ -181,22 +232,25 @@ namespace team3
             {
                 while (data.Read())
                 {
-                    products = data.GetString(2);
+                    if (!data.IsDBNull(data.GetOrdinal("categoryproduct")))
+                        products = data.GetString(2);
+                    else
+                        products = null;
                 }
             }
             data.Close();
             conn.Close();
 
-            string[] sArray1 = products.Split(new char[1] { ',' });
+             string[] sArray1 = products.Split(new char[1] { ',' });
 
             if (sArray1[0] != null)
             {
-                //foreach (string i in sArray1)
                 for (int i = 0; i < sArray1.Count(); i++)
                 {
                     ProductList.Add(Convert.ToInt32(sArray1[i].ToString()));
                 }
             }
+        
 
             return ProductList;
         }

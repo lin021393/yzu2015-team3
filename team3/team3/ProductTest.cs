@@ -113,6 +113,21 @@ namespace team3
         }
 
         [TestMethod]
+        public void DeleteCategory()
+        {
+            Category deleteCategory= new Category();
+            deleteCategory.AddCategory(5,"test");
+            deleteCategory.DeleteCategory(5);
+        }
+
+        [TestMethod]
+        public void DeleteCategoryProduct()
+        {
+            Category deleteCategoryProduct = new Category();
+            deleteCategoryProduct.DeleteProduct(3, 5);
+        }
+
+        [TestMethod]
         public void showProductList()
         {
             Category info = new Category();
@@ -120,8 +135,8 @@ namespace team3
             int productID = 3;//search ID=1 product Info
             DataInfo = info.ShowProductList(productID);//用productID來查商品的欄位資訊
 
-            Assert.AreEqual(1, DataInfo[0]);
-            Assert.AreEqual(2, DataInfo[1]);
+            Assert.AreEqual(1, DataInfo[1]);
+            Assert.AreEqual(2, DataInfo[2]);
         }
     }
 }
