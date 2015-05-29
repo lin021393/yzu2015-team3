@@ -86,11 +86,32 @@ namespace team3
     public class Category
     {
         public int categoryid { get; private set; }
-        public int categoryname { get; private set; }
-        public int categoryproduct { get; private set; }
+        public string categoryname { get; private set; }
+        public string categoryproduct { get; private set; }
 
-        public void AddCategory(int categoryid, string categoryname, string categoryproduct)
+        public void AddCategory(int categoryId, string categoryName)
         {
+            string dbHost = "127.0.0.1";//資料庫位址
+            string dbUser = "root";//資料庫使用者帳號
+            string dbPass = "AgileTeam3";//資料庫使用者密碼
+            string dbName = "Team3";//資料庫名稱
+
+            string categoryProduct = null;
+            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlCommand command = conn.CreateCommand();
+            conn.Open();
+
+            command.CommandText = "Insert into category(categoryid,categoryname,categoryproduct) values(" + categoryId + ",'" + categoryName + "','" + categoryProduct + "')";
+            command.ExecuteNonQuery();
+
+            conn.Close();
+        }
+
+        public void AddProduct(int CategoryId, int ProductId)
+        {
+            List<int> ProductList = new List<int>();
+
             string dbHost = "127.0.0.1";//資料庫位址
             string dbUser = "root";//資料庫使用者帳號
             string dbPass = "AgileTeam3";//資料庫使用者密碼
@@ -101,15 +122,30 @@ namespace team3
             MySqlCommand command = conn.CreateCommand();
             conn.Open();
 
-            command.CommandText = "Insert into category(categoryid,categoryname,categoryproduct) values(" + categoryid + ",'" + categoryname + "','" + categoryproduct + "')";
+            List<int> categoryProduct = ShowProductList(CategoryId);
+
+            if(categoryProduct.Contains(ProductId) == false)
+            {
+                categoryProduct.Add(ProductId);
+            }
+
+            categoryProduct.Sort();
+
+            string NewCategoryProduct = "";
+
+            for (int i = 0; i < categoryProduct.Count(); i++ )
+            {
+                if (i != 0)
+                    NewCategoryProduct += ",";
+                NewCategoryProduct += categoryProduct[i].ToString();
+            }
+            
+
+            command.CommandText = "Update category SET categoryproduct='" + NewCategoryProduct + "' WHERE categoryid = " + CategoryId.ToString();
             command.ExecuteNonQuery();
 
             conn.Close();
-        }
-
-        public void AddProduct()
-        {
-
+            
         }
 
         public void DeleteCategory()
@@ -120,6 +156,49 @@ namespace team3
         public void DeleteProduct()
         {
 
+        }
+
+        public List<int> ShowProductList(int CategoryId)
+        {
+            List<int> ProductList = new List<int>();
+
+            string dbHost = "127.0.0.1";//資料庫位址
+            string dbUser = "root";//資料庫使用者帳號
+            string dbPass = "AgileTeam3";//資料庫使用者密碼
+            string dbName = "Team3";//資料庫名稱
+
+            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
+            MySqlConnection conn = new MySqlConnection(connStr);
+            MySqlCommand command = conn.CreateCommand();
+            conn.Open();
+
+            command.CommandText = "SELECT  * FROM category WHERE categoryid = " + CategoryId.ToString();
+            MySqlDataReader data = command.ExecuteReader();
+
+            string products = "";
+
+            if (data.HasRows)
+            {
+                while (data.Read())
+                {
+                    products = data.GetString(2);
+                }
+            }
+            data.Close();
+            conn.Close();
+
+            string[] sArray1 = products.Split(new char[1] { ',' });
+
+            if (sArray1[0] != null)
+            {
+                //foreach (string i in sArray1)
+                for (int i = 0; i < sArray1.Count(); i++)
+                {
+                    ProductList.Add(Convert.ToInt32(sArray1[i].ToString()));
+                }
+            }
+
+            return ProductList;
         }
     }
 }

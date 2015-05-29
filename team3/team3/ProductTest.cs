@@ -98,7 +98,30 @@ namespace team3
         public void AddCategory()
         {
             Category addCategory = new Category();
-            addCategory.AddCategory(3, "電腦", "ASUS ZENBOOK UX305; APPLE Macbook Air");
+            addCategory.AddCategory(3, "電腦");
+        }
+
+        [TestMethod]
+        public void AddCategoryProduct()
+        {
+            Category addCategoryProduct = new Category();
+            addCategoryProduct.AddProduct(3, 1);
+            addCategoryProduct.AddProduct(3, 2);
+            addCategoryProduct.AddProduct(3,10);
+            addCategoryProduct.AddProduct(3,10);
+            addCategoryProduct.AddProduct(3, 5);
+        }
+
+        [TestMethod]
+        public void showProductList()
+        {
+            Category info = new Category();
+            List<int> DataInfo = new List<int>();
+            int productID = 3;//search ID=1 product Info
+            DataInfo = info.ShowProductList(productID);//用productID來查商品的欄位資訊
+
+            Assert.AreEqual(1, DataInfo[0]);
+            Assert.AreEqual(2, DataInfo[1]);
         }
     }
 }
