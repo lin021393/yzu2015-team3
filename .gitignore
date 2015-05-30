@@ -205,5 +205,3 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-DBSettings.settings
-DBSettings.Designer.cs
