@@ -164,12 +164,15 @@ namespace team3
             
             if ( reader.Read() )
             {
-                return new Product((long)reader["id"], 
+                Product product = new Product((long)reader["id"],
                                     reader["name"] as String,
                                     (long)reader["price"],
                                     reader["imgUrl"] as String,
                                     reader["description"] as String,
                                     (long)reader["remain"]);
+
+                DatabaseConnection.RemoveConnection(con);
+                return product;
             }
             else
             {
