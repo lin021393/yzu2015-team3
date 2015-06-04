@@ -31,6 +31,14 @@ namespace team3
                                     [description] TEXT ,
                                     [remain] INTEGER );";
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [categories] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [name] TEXT );";
+            
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [category_link] (
+                                    [product_id] INTEGER ,
+                                    [category_name] INTEGER );";
+
             cmd.ExecuteNonQuery();
             
         }
