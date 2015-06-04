@@ -2,7 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MySql.Data.MySqlClient;
+
 namespace team3
 {
     /// <summary>
@@ -59,84 +59,54 @@ namespace team3
         #endregion
 
         [TestMethod]
-        public void ShowProductInfo()
+        public void TestAddProduct()
         {
-            //    productid = 0;
-            //    categoryid = 1;
-            //    productname = 2;
-            //    productprice = 3;
-            //    productimages = 4;
-            //    description = 5;
-            //    productremain = 6;
-            Product info= new Product();
-            List<string> DataInfo= new List<string>();
-            int productID = 1;//search ID=1 product Info
-            DataInfo = info.ShowProduct(productID);//用productID來查商品的欄位資訊
+            Product product = new Product(
+                     "Nokia 3310" ,
+                     111 ,
+                     "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg" ,
+                     "地表最強手機!!!!!!" ,
+                     99
+                );
+            Assert.IsTrue(product.Save());
+        }
 
-            //productID沒有資料時候傳productID=0 在實作部份取最後一筆資料 
-            /*if (DataInfo.Count == 0)
+
+        [TestMethod]
+        public void TestGetProductById()
+        {
+            Product product = new Product(
+                     "Nokia 3310",
+                     111,
+                     "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg",
+                     "地表最強手機!!!!!!",
+                     99
+                );
+
+            bool result = product.Save();
+
+            if(result)
             {
-                DataInfo = info.ShowProduct(0);
+                Product productLoaded = Product.GetProductById(product.Id);
+
+                Assert.IsNotNull(productLoaded);
+
+                if( product != null )
+                {
+                    Assert.AreEqual(product.Id, productLoaded.Id);
+                    Assert.AreEqual(product.Name, productLoaded.Name);
+                    Assert.AreEqual(product.Price, productLoaded.Price);
+                    Assert.AreEqual(product.Remain, productLoaded.Remain);
+                    Assert.AreEqual(product.ImageUrl, productLoaded.ImageUrl);
+                    Assert.AreEqual(product.Description, productLoaded.Description);
+
+                }
             }
-            */
-            Assert.AreEqual("1", DataInfo[0]);
-            Assert.AreEqual("3", DataInfo[1]);
-            Assert.AreEqual("ASUS ZENBOOK UX305", DataInfo[2]);
-            Assert.AreEqual("22900", DataInfo[3]);
-            Assert.AreEqual("123.jpg", DataInfo[4]);
-            Assert.AreEqual("輕盈靈巧的ZenBook UX305沉穩紮實的陶瓷白或黑曜岩外觀色彩、加上同心圓髮絲紋表面處理，無論在遠處欣賞或近距離接觸，都展現出獨一無二的質感；精巧的鑽石切邊，更在細微處流露精品格調。", DataInfo[5]);
-            Assert.AreEqual("50", DataInfo[6]);
+            else
+            {
+                Assert.Fail("Add Product Fail.");
+            }
         }
-        [TestMethod]
-        public void AddProductInfo()
-        {
-            Product info = new Product();
-            info.AddProduct(0, 3, "APPLE Macbook Air", 19999, "456.jpg", "APPLE 就是潮", 69);
-        }
-
-        [TestMethod]
-        public void AddCategory()
-        {
-            Category addCategory = new Category();
-            addCategory.AddCategory(3, "電腦");
-        }
-
-        [TestMethod]
-        public void AddCategoryProduct()
-        {
-            Category addCategoryProduct = new Category();
-            addCategoryProduct.AddProduct(3, 1);
-            addCategoryProduct.AddProduct(3, 2);
-            addCategoryProduct.AddProduct(3,10);
-            addCategoryProduct.AddProduct(3,10);
-            addCategoryProduct.AddProduct(3, 5);
-        }
-
-        [TestMethod]
-        public void DeleteCategory()
-        {
-            Category deleteCategory= new Category();
-            deleteCategory.AddCategory(5,"test");
-            deleteCategory.DeleteCategory(5);
-        }
-
-        [TestMethod]
-        public void DeleteCategoryProduct()
-        {
-            Category deleteCategoryProduct = new Category();
-            deleteCategoryProduct.DeleteProduct(3, 5);
-        }
-
-        [TestMethod]
-        public void showProductList()
-        {
-            Category info = new Category();
-            List<int> DataInfo = new List<int>();
-            int productID = 3;//search ID=1 product Info
-            DataInfo = info.ShowProductList(productID);//用productID來查商品的欄位資訊
-
-            Assert.AreEqual(1, DataInfo[1]);
-            Assert.AreEqual(2, DataInfo[2]);
-        }
+      
     }
 }

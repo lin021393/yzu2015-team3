@@ -2,8 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MySql;
-using MySql.Data.MySqlClient;
+using System.Data.SQLite;
 
 
 namespace team3
@@ -64,9 +63,22 @@ namespace team3
         [TestMethod]
         public void TesTConnection()
         {
-            MySqlConnection client = DatabaseConnection.GetConnection();
-            client.Open();
+            SQLiteConnection client = DatabaseConnection.GetConnection();
             DatabaseConnection.RemoveConnection(client);
+        }
+
+        [TestMethod]
+        public void TestDatabaseInit()
+        {
+            try
+            {
+                DatabaseConnection.Init();
+            }
+            catch
+            {
+                Assert.Fail("Database Initialize Fail.");
+            }
+           
         }
     }
 }

@@ -3,228 +3,182 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-
-using System.Data.Common; 
+using System.Data.Common;
+using System.Data.SQLite; 
 namespace team3
 {
     
     public class Product
     {
-        public int productid { get; private set; }
-        public int categoryid { get; private set; }
-        public string productname { get; private set; }
-        public int productprice { get; private set; }
-        public string productimages { get; private set; }
-        public string description { get; private set; }
-        public int productremain { get; private set; }
+        private long _id = 0;
+        private string _name;
+        private long _price;
+        private string _img_Url;
+        private string _description;
+        private long _remain;
+        private List<Category> _catogorys = new List<Category>();
+        private bool isDirty = false;
+
+        public Product(string name, long price, string imgUrl, string description, long remain)
+        {
+            this.Id = 0;
+            this.Name = name;
+            this.Price = price;
+            this.ImageUrl = imgUrl;
+            this.Description = description;
+            this.Remain = remain;
+            isDirty = false;
+        }
+
+        private Product(long id, string name, long price, string imgUrl, string description, long remain)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Price = price;
+            this.ImageUrl = imgUrl;
+            this.Description = description;
+            this.Remain = remain;
+            isDirty = false;
+        }
+
+        public long Id
+        {
+            get { return _id; }
+            internal set { this._id = value; }
+        } 
+
+        public string Name
+        {
+            get { return this._name; }
+            set {  this._name = value; this.isDirty = true; } 
+        }
+
+        public long Price
+        {
+            get { return this._price; }
+            set { this._price = value; this.isDirty = true; }
+        }
+
+        public string ImageUrl 
+        {
+            get { return this._img_Url; }
+            set { this._img_Url = value; this.isDirty = true; } 
+        }
+
+        public string Description
+        {
+            get { return this._description; }
+            set { this._description = value; this.isDirty = true;  } 
+        }
+
+        public long Remain
+        {
+            get { return this._remain; }
+            set { this._remain = value; this.isDirty = true; } 
+        }
+
+
+        public bool IsSaved()
+        {
+            return this.Id > 0 && this.isDirty == true;
+        }
+
+        public bool Save()
+        {
+
+            try
+            {
+
+                SQLiteConnection con = DatabaseConnection.GetConnection();
+                SQLiteCommand cmd = con.CreateCommand();
+
+                if (this.Id >= 0)
+                {
+                    cmd.CommandText = @"INSERT INTO [products] (
+                                [name], 
+                                [price],
+                                [imgUrl], 
+                                [description],
+                                [remain]
+                               ) VALUES ( @name, @price, @imgUrl, @description, @remain )";
+
+                    cmd.Parameters.Add(new SQLiteParameter("@name") { Value = this.Name, });
+                    cmd.Parameters.Add(new SQLiteParameter("@price") { Value = this.Price, });
+                    cmd.Parameters.Add(new SQLiteParameter("@imgUrl") { Value = this.ImageUrl, });
+                    cmd.Parameters.Add(new SQLiteParameter("@description") { Value = this.Description, });
+                    cmd.Parameters.Add(new SQLiteParameter("@remain") { Value = this.Remain, });
+                    cmd.ExecuteNonQuery();
+
+                    string sql = "SELECT last_insert_rowid()";
+                    cmd = new SQLiteCommand(sql, con);
+
+                    this.Id = (long)cmd.ExecuteScalar();
+                    DatabaseConnection.RemoveConnection(con);
+                    return this.Id > 0;
+                }
+                else
+                {
+                    cmd.CommandText = @"UPDATE [products]
+                                        SET [name] = @name ,
+                                            [price] = @price ,
+                                            [imgUrl] = @imgUrl ,
+                                            [description] = @description ,
+                                            [remain] = @remain 
+                                        WHERE [id] = @id";
+
+                    cmd.Parameters.Add(new SQLiteParameter("@name") { Value = this.Name, });
+                    cmd.Parameters.Add(new SQLiteParameter("@price") { Value = this.Price, });
+                    cmd.Parameters.Add(new SQLiteParameter("@imgUrl") { Value = this.ImageUrl, });
+                    cmd.Parameters.Add(new SQLiteParameter("@description") { Value = this.Description, });
+                    cmd.Parameters.Add(new SQLiteParameter("@remain") { Value = this.Remain, });
+                    cmd.Parameters.Add(new SQLiteParameter("@id") { Value = this.Remain, });
+                    int res = cmd.ExecuteNonQuery();
+
+                    DatabaseConnection.RemoveConnection(con);
+                    return true;
+
+                }
+             
+               
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+
+        }
+        
+        public static Product GetProductById(long ProductId) {
+
+            SQLiteConnection con = DatabaseConnection.GetConnection();
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"SELECT * 
+                                FROM [products]
+                                WHERE [id] = @id";
+            cmd.Parameters.Add(new SQLiteParameter("@id") { Value = ProductId, });
+            SQLiteDataReader reader = cmd.ExecuteReader();
+            
+            if ( reader.Read() )
+            {
+                return new Product((long)reader["id"], 
+                                    reader["name"] as String,
+                                    (long)reader["price"],
+                                    reader["imgUrl"] as String,
+                                    reader["description"] as String,
+                                    (long)reader["remain"]);
+            }
+            else
+            {
+                return null;
+            }
+            
+
+        }
+
 
         
-        public List<string> ShowProduct(int productID)
-        {
-            MySqlConnection conn = DatabaseConnection.GetConnection();
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open(); 
-          
-          
-            ////計算總資料數
-            //command.CommandText = "SELECT  count(*) FROM product";
-            //int count = Convert.ToInt32(command.ExecuteScalar());
-
-            //拿最後一筆資料(因為是auto_increment所以ID有可能是空的)
-           if(productID==0)
-                command.CommandText = "SELECT  * FROM product ORDER by productid desc LIMIT  1 " ;
-            //根據productid拿資料
-            else
-               command.CommandText = "SELECT  * FROM product WHERE productid = " + productID.ToString();
-            MySqlDataReader data = command.ExecuteReader();
-
-
-            List<string> NameList = new List<string>();
-            if (data.HasRows) 
-            {
-                while (data.Read())
-                {
-                    NameList.Add(Convert.ToString(data["productid"]));
-                    NameList.Add(Convert.ToString(data["categoryid"]));
-                    NameList.Add(Convert.ToString(data["productname"]));
-                    NameList.Add(Convert.ToString(data["productprice"]));
-                    NameList.Add(Convert.ToString(data["productimages"]));
-                    NameList.Add(Convert.ToString(data["description"]));
-                    NameList.Add(Convert.ToString(data["productremain"]));
-                }
-            }
-            data.Close();
-            conn.Close();
-            return NameList;
-        }
-        public void AddProduct(int productID, int categoryid, string productname, int productprice, string productimages, string describes, int productremain)
-        {
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-          
-            command.CommandText = "Insert into product(productid,categoryid,productname,productprice,productimages,description,productremain) values(" + productid + "," + categoryid + ",'" + productname + "'," + productprice + ",'" + productimages + "','" + describes + "'," + productremain + ")";
-            command.ExecuteNonQuery();
-
-            DatabaseConnection.RemoveConnection(conn);
-        }
-    }
-    public class Category
-    {
-        public int categoryid { get; private set; }
-        public string categoryname { get; private set; }
-        public string categoryproduct { get; private set; }
-
-        public void AddCategory(int categoryId, string categoryName)
-        {
-            string categoryProduct = "0";
-
-            MySqlConnection conn = DatabaseConnection.GetConnection();
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-            command.CommandText = "Insert into category(categoryid,categoryname,categoryproduct) values(" + categoryId + ",'" + categoryName + "','" + categoryProduct + "')";
-            command.ExecuteNonQuery();
-
-            DatabaseConnection.RemoveConnection(conn);
-        }
-
-        public void AddProduct(int CategoryId, int ProductId)
-        {
-            List<int> ProductList = new List<int>();
-
-            string dbHost = "127.0.0.1";//資料庫位址
-            string dbUser = "root";//資料庫使用者帳號
-            string dbPass = "AgileTeam3";//資料庫使用者密碼
-            string dbName = "Team3";//資料庫名稱
-
-            string connStr = "server=" + dbHost + ";uid=" + dbUser + ";pwd=" + dbPass + ";database=" + dbName;
-            MySqlConnection conn = new MySqlConnection(connStr);
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-            List<int> categoryProduct = ShowProductList(CategoryId);
-
-            if(categoryProduct.Contains(ProductId) == false)
-            {
-                categoryProduct.Add(ProductId);
-            }
-
-            categoryProduct.Sort();
-
-            string NewCategoryProduct = null;
-
-            for (int i = 0; i < categoryProduct.Count(); i++ )
-            {
-                if (i != 0)
-                    NewCategoryProduct += ",";
-                NewCategoryProduct += categoryProduct[i].ToString();
-            }
-            
-
-            command.CommandText = "Update category SET categoryproduct='" + NewCategoryProduct + "' WHERE categoryid = " + CategoryId.ToString();
-            command.ExecuteNonQuery();
-
-            conn.Close();
-            
-        }
-
-        public void DeleteCategory(int CategoryId)
-        {
-            MySqlConnection conn = DatabaseConnection.GetConnection();
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-            List<int> categoryProduct = ShowProductList(CategoryId);
-
-            if (categoryProduct.Count() == 1)
-            {
-                command.CommandText = "Delete FROM category WHERE CategoryId='" + CategoryId.ToString() + "'";
-            }
-
-
-            DatabaseConnection.RemoveConnection(conn);
-        }
-
-        public void DeleteProduct(int CategoryId, int ProductId)
-        {
-            MySqlConnection conn = DatabaseConnection.GetConnection();
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-            List<int> categoryProduct = ShowProductList(CategoryId);
-
-            if(categoryProduct.Contains(ProductId) == false)
-            {
-            }
-            else
-            {
-                categoryProduct.Remove(ProductId);
-            }
-
-            string NewCategoryProduct = null;
-
-            for (int i = 0; i < categoryProduct.Count(); i++ )
-            {
-                if (i != 0)
-                    NewCategoryProduct += ",";
-                NewCategoryProduct += categoryProduct[i].ToString();
-            }
-            
-
-            command.CommandText = "Update category SET categoryproduct='" + NewCategoryProduct + "' WHERE categoryid = " + CategoryId.ToString();
-            command.ExecuteNonQuery();
-
-            DatabaseConnection.RemoveConnection(conn);
-        }
-
-        public List<int> ShowProductList(int CategoryId)
-        {
-            List<int> ProductList = new List<int>();
-
-            MySqlConnection conn = DatabaseConnection.GetConnection();
-            MySqlCommand command = conn.CreateCommand();
-            conn.Open();
-
-            command.CommandText = "SELECT  * FROM category WHERE categoryid = " + CategoryId.ToString();
-            MySqlDataReader data = command.ExecuteReader();
-
-            string products = "";
-
-            if (data.HasRows)
-            {
-                while (data.Read())
-                {
-                    if (!data.IsDBNull(data.GetOrdinal("categoryproduct")))
-                        products = data.GetString(2);
-                    else
-                        products = null;
-                }
-            }
-            data.Close();
-
-            DatabaseConnection.RemoveConnection(conn);
-
-             string[] sArray1 = products.Split(new char[1] { ',' });
-
-            if (sArray1[0] != null)
-            {
-                for (int i = 0; i < sArray1.Count(); i++)
-                {
-                    ProductList.Add(Convert.ToInt32(sArray1[i].ToString()));
-                }
-            }
-        
-
-            return ProductList;
-        }
+  
     }
 }

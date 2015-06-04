@@ -1,10 +1,10 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Configuration.Assemblies;
+using System.Data.SQLite;
 
 
 namespace team3
@@ -12,24 +12,39 @@ namespace team3
     class DatabaseConnection
     {
 
-        private static List<MySqlConnection> connections = new List<MySqlConnection>();
+        private const string dbName = "database.db";
 
-        public static MySqlConnection GetConnection()
+        private static List<SQLiteConnection> connections = new List<SQLiteConnection>();
+
+
+        public static void Init()
         {
-            String connectionStr =  String.Format("server={0};uid={1};pwd={2};database={3}",
-                                        DBSettings.Default.dbHost, 
-                                        DBSettings.Default.dbUser,
-                                        DBSettings.Default.dbPassword,
-                                        DBSettings.Default.dbName);
+            SQLiteConnection con = GetConnection();
 
-            MySqlConnection connection = new MySqlConnection(connectionStr);
+            SQLiteCommand cmd = con.CreateCommand();
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [products] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [name] TEXT ,
+                                    [price] INTEGER ,
+                                    [imgUrl] TEXT ,
+                                    [description] TEXT ,
+                                    [remain] INTEGER );";
+
+            cmd.ExecuteNonQuery();
+            
+        }
+
+        public static SQLiteConnection GetConnection()
+        {
+            SQLiteConnection connection = new SQLiteConnection("Data source=" + dbName);
+
+            connection.Open();
             connections.Add(connection);
-
             return connection;
         }
 
-        public static Boolean RemoveConnection(MySqlConnection connection) 
+        public static Boolean RemoveConnection(SQLiteConnection connection) 
         {
             connection.Close();
             return connections.Remove(connection);
