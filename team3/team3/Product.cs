@@ -38,7 +38,7 @@ namespace team3
             this.ImageUrl = imgUrl;
             this.Description = description;
             this.Remain = remain;
-            isDirty = false;
+            isDirty = true;
         }
 
         public long Id
@@ -85,6 +85,8 @@ namespace team3
 
         public bool Save()
         {
+            if (IsSaved())
+                return true;
 
             try
             {
