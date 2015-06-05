@@ -58,6 +58,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Category.cs" />
+    <Compile Include="CategoryLink.cs" />
     <Compile Include="CategoryTest.cs" />
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="Main.cs" />

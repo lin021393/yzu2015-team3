@@ -61,11 +61,20 @@ namespace team3
         [TestMethod]
         public void TestAddCategory()
         {
-            Category category = new Category( "手機" );
+            Category category = new Category( "ABC" );
             Assert.IsTrue(category.Save());
+            Category.Remove("ABC");
         }
 
-        
+        [TestMethod]
+        public void TestRemoveCategory()
+        {
+            Category category = new Category("123");
+            category.Save();
+            Assert.IsTrue(Category.Remove("123"));
+            Assert.IsFalse(Category.Remove("123"));
+        }
+
         [TestMethod]
         public void TestGetCategoryById()
         {
@@ -89,6 +98,8 @@ namespace team3
             {
                 Assert.Fail("Get Category Fail.");
             }
+            Category.Remove("手機");
+            Assert.IsNull(Category.GetCategoryById(category.Id));
         }
         
         
@@ -107,7 +118,7 @@ namespace team3
 
                 if (category != null)
                 {
-                   // Assert.AreEqual(category.Id, categoryLoaded.Id); 重複的Category Name ID會不同
+                    Assert.AreEqual(category.Id, categoryLoaded.Id);
                     Assert.AreEqual(category.Name, categoryLoaded.Name);
                 }
             }
@@ -115,6 +126,25 @@ namespace team3
             {
                 Assert.Fail("Get Category Fail.");
             }
+            Category.Remove("手機");
+            Assert.IsNull(Category.GetCategoryByName("手機"));
         }
+
+        [TestMethod]
+        public void TestAddCategoryLink()
+        {
+            CategoryLink category_link = new CategoryLink(2, 3);
+            Assert.IsTrue(category_link.Save());
+        }
+
+        /*
+        [TestMethod]
+        public void TestGetProductListByCategory()
+        {
+            List<long> product_list = CategoryLink.GetProductListByCategory(1);
+            List<long> test_data = new List<long> { 2 };
+            Assert.AreEqual(test_data, product_list);
+        }
+        */
     }
 }

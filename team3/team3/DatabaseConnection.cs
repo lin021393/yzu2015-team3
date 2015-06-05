@@ -41,7 +41,7 @@ namespace team3
             
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [category_link] (
                                     [product_id] INTEGER ,
-                                    [category_name] INTEGER );";
+                                    [category_id] INTEGER );";
             cmd.ExecuteNonQuery();
             
         }
