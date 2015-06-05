@@ -49,10 +49,8 @@ namespace team3
         {
             if (IsSaved())
                 return true;
-           /* else if (GetCategoryByName(this._name) != null)
-            {
+            else if (GetCategoryByName(this._name) != null)
                 return false;
-            }*/
 
             try
             {
@@ -125,8 +123,7 @@ namespace team3
             }
 
         }
-
-        
+   
         public static Category GetCategoryByName(string CategoryName)
         {
 
@@ -155,6 +152,28 @@ namespace team3
 
         }
 
+        public static bool Remove(string CategoryName)
+        {
+            if(GetCategoryByName(CategoryName) != null &&
+               CategoryLink.GetProductListByCategory(GetCategoryByName(CategoryName).Id) == null)
+            {
+                SQLiteConnection con = DatabaseConnection.GetConnection();
+                SQLiteCommand cmd = con.CreateCommand();
 
+
+                cmd.CommandText = @"DELETE 
+                                    FROM [categories]
+                                    WHERE [name] = @name";
+                cmd.Parameters.Add(new SQLiteParameter("@name") { Value = CategoryName, });
+                SQLiteDataReader reader = cmd.ExecuteReader();
+
+                DatabaseConnection.RemoveConnection(con);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
