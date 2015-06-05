@@ -30,15 +30,18 @@ namespace team3
                                     [imgUrl] TEXT ,
                                     [description] TEXT ,
                                     [remain] INTEGER );";
+            cmd.ExecuteNonQuery();
 
+            
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [categories] (
                                     [id] INTEGER PRIMARY KEY ,
                                     [name] TEXT );";
+            cmd.ExecuteNonQuery();
+
             
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [category_link] (
                                     [product_id] INTEGER ,
                                     [category_name] INTEGER );";
-
             cmd.ExecuteNonQuery();
             
         }
