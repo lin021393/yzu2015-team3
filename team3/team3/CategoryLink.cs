@@ -35,7 +35,7 @@ namespace team3
 
         public bool IsSaved()
         {
-            return this.isDirty == true;
+            return this.isDirty == false;
         }
 
         public bool Save()
@@ -65,12 +65,13 @@ namespace team3
 
                     DatabaseConnection.RemoveConnection(con);
 
-                    this.isDirty = true;
+                    this.isDirty = false;
 
                     return true;
                 }
                 else
                 {
+                    DatabaseConnection.RemoveConnection(con);
                     return false;
                 }
 
@@ -109,6 +110,7 @@ namespace team3
             }
             else
             {
+                DatabaseConnection.RemoveConnection(con);
                 return null;
             }
 

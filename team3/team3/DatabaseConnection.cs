@@ -17,6 +17,23 @@ namespace team3
         private static List<SQLiteConnection> connections = new List<SQLiteConnection>();
 
 
+        public static string DBName
+        {
+            get { return dbName;  }
+        }
+
+        public static void DropTable(String TableName)
+        {
+            SQLiteConnection con = GetConnection();
+
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"DROP TABLE IF EXISTS [" + TableName + "];";
+            cmd.ExecuteNonQuery();
+
+            RemoveConnection(con);
+        }
+
         public static void Init()
         {
             SQLiteConnection con = GetConnection();
@@ -43,7 +60,17 @@ namespace team3
                                     [product_id] INTEGER ,
                                     [category_id] INTEGER );";
             cmd.ExecuteNonQuery();
-            
+
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [users] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [account] TEXT NOT NULL UNIQUE ,
+                                    [password] TEXT ,
+                                    [email] TEXT NOT NULL UNIQUE);";
+
+            cmd.ExecuteNonQuery();
+
+            RemoveConnection(con);
+
         }
 
         public static SQLiteConnection GetConnection()
@@ -60,6 +87,8 @@ namespace team3
             connection.Close();
             return connections.Remove(connection);
         }
+        
+
         
     }
 }

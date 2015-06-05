@@ -80,7 +80,7 @@ namespace team3
 
         public bool IsSaved()
         {
-            return this.Id > 0 && this.isDirty == true;
+            return this.Id > 0 && this.isDirty == false;
         }
 
         public bool Save()
@@ -116,6 +116,8 @@ namespace team3
 
                     this.Id = (long)cmd.ExecuteScalar();
                     DatabaseConnection.RemoveConnection(con);
+                    this.isDirty = false;
+
                     return this.Id > 0;
                 }
                 else
@@ -135,7 +137,7 @@ namespace team3
                     cmd.Parameters.Add(new SQLiteParameter("@remain") { Value = this.Remain, });
                     cmd.Parameters.Add(new SQLiteParameter("@id") { Value = this.Remain, });
                     int res = cmd.ExecuteNonQuery();
-
+                    this.isDirty = false;
                     DatabaseConnection.RemoveConnection(con);
                     return true;
 

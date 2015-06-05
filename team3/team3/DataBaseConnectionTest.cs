@@ -80,5 +80,18 @@ namespace team3
             }
            
         }
+
+        [TestMethod]
+        public void TestCreateTable()
+        {
+            try
+            {
+                DatabaseConnection.Init();
+            } 
+            catch (SQLiteException ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+        }
     }
 }

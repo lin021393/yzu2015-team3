@@ -147,6 +147,7 @@ namespace team3
             }
             else
             {
+                DatabaseConnection.RemoveConnection(con);
                 return null;
             }
 

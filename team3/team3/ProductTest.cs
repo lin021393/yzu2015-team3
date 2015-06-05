@@ -107,14 +107,24 @@ namespace team3
                 Assert.Fail("Add Product Fail.");
             }
         }
+
+
         [TestMethod]
         public void TestDeleteProductById()
         {
-            long deleteProductId = 3;
-            Product productLoaded = Product.GetProductById(deleteProductId);
+            Product product = new Product(
+                     "Nokia 3310",
+                     111,
+                     "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg",
+                     "地表最強手機!!!!!!",
+                     99
+                );
+            product.Save();
+
+            Product productLoaded = Product.GetProductById(product.Id);
 
             Assert.IsNotNull(productLoaded);
-            Assert.IsTrue(productLoaded.DeleteProductById(deleteProductId));
+            Assert.IsTrue(productLoaded.DeleteProductById(product.Id));
         }
     }
 }
