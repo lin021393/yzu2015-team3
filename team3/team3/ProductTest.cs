@@ -107,6 +107,14 @@ namespace team3
                 Assert.Fail("Add Product Fail.");
             }
         }
-      
+        [TestMethod]
+        public void TestDeleteProductById()
+        {
+            long deleteProductId = 3;
+            Product productLoaded = Product.GetProductById(deleteProductId);
+
+            Assert.IsNotNull(productLoaded);
+            Assert.IsTrue(productLoaded.DeleteProductById(deleteProductId));
+        }
     }
 }

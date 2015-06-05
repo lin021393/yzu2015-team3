@@ -182,7 +182,39 @@ namespace team3
 
         }
 
+        public bool DeleteProductById(long ProductId)
+        {
+            try
+            {
+                SQLiteConnection con = DatabaseConnection.GetConnection();
+                SQLiteCommand cmd = con.CreateCommand();
 
+                if (ProductId > 0)
+                {
+                    cmd.CommandText = @"DELETE 
+                                FROM [products]
+                                WHERE [id] = @id";
+                    cmd.Parameters.Add(new SQLiteParameter("@id") { Value = ProductId, });
+                    int check = cmd.ExecuteNonQuery();
+                    DatabaseConnection.RemoveConnection(con);
+
+                    if (check > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                {
+                    DatabaseConnection.RemoveConnection(con);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
         
   
     }
