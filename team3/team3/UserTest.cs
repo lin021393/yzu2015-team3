@@ -41,6 +41,7 @@ namespace team3
             Assert.IsTrue(regResult3.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
             Assert.IsFalse(regResult3.Result);
 
+
             /* 合法帳號,合法密碼,已存在信箱 */
             AuthResult regResult4 = User.Register("ssadadasdasdadsa", "passowrd", "passowrd", "example@gmail.com");
             Assert.IsNotNull(regResult4);
@@ -79,8 +80,8 @@ namespace team3
             Assert.IsTrue(regResult7.Messages.Contains(Strings.USER_REGISTER_PASSWORD_CONFIRM_ERROR));
             Assert.IsFalse(regResult7.Result);
 
-            /* 合法帳號,合法密碼,不合法信箱 */
-            AuthResult regResult8 = User.Register("ms89011123", "passowrd", "passowrd2", "example7gmail.com");
+            /* 合法帳號,合法密碼,空白信箱 */
+            AuthResult regResult8 = User.Register("asdasdadad2", "passowrd", "passowrd2", "");
             Assert.IsNotNull(regResult8);
             Assert.IsNull(regResult8.User);
             Assert.IsNotNull(regResult8.Messages);
@@ -88,6 +89,23 @@ namespace team3
             Assert.IsTrue(regResult8.Messages.Contains(Strings.USER_REGISTER_EMAIL_FORMAT_ERROR));
             Assert.IsFalse(regResult8.Result);
 
+            /* 空白帳號,合法密碼,合法信箱 */
+            AuthResult regResult9 = User.Register("", "passowrd", "passowrd", "examp23le3@gmail.com");
+            Assert.IsNotNull(regResult9);
+            Assert.IsNull(regResult9.User);
+            Assert.IsNotNull(regResult9.Messages);
+            Assert.IsTrue(regResult9.Messages.Contains(Strings.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult9.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
+            Assert.IsFalse(regResult9.Result);
+
+            /* 合法帳號,空白密碼,合法信箱 */
+            AuthResult regResult10 = User.Register("ms8901231235sd", "", "", "examp23le3@gmail.com");
+            Assert.IsNotNull(regResult10);
+            Assert.IsNull(regResult10.User);
+            Assert.IsNotNull(regResult10.Messages);
+            Assert.IsTrue(regResult10.Messages.Contains(Strings.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult10.Messages.Contains(Strings.USER_REGISTER_PASSWORD_LENGTH_ERROR));
+            Assert.IsFalse(regResult10.Result);
 
         }
     }
