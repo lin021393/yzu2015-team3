@@ -81,7 +81,7 @@ namespace team3
             Assert.IsFalse(regResult7.Result);
 
             /* 合法帳號,合法密碼,空白信箱 */
-            AuthResult regResult8 = User.Register("asdasdadad2", "passowrd", "passowrd2", "");
+            AuthResult regResult8 = User.Register("asdasdadad2", "passowrd", "passowrd", "");
             Assert.IsNotNull(regResult8);
             Assert.IsNull(regResult8.User);
             Assert.IsNotNull(regResult8.Messages);
