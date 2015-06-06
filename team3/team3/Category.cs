@@ -58,7 +58,7 @@ namespace team3
                 SQLiteConnection con = DatabaseConnection.GetConnection();
                 SQLiteCommand cmd = con.CreateCommand();
 
-                if (this.Id >= 0)
+                if (this.Id == 0)
                 {
                     cmd.CommandText = @"INSERT INTO [categories] (
                                 [name]
