@@ -11,6 +11,11 @@ namespace team3
     [TestClass]
     public class ProductTest
     {
+        public void Init()
+        {
+            DatabaseConnection.Init();
+        }
+
         public ProductTest()
         {
             //

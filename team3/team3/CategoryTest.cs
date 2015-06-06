@@ -11,6 +11,11 @@ namespace team3
     [TestClass]
     public class CategoryTest
     {
+        public void Init()
+        {
+            DatabaseConnection.Init();
+        }
+
         public CategoryTest()
         {
             //
@@ -141,10 +146,10 @@ namespace team3
         [TestMethod]
         public void TestGetProductListByCategory()
         {
-            List<long> product_list = CategoryLink.GetProductListByCategory(1);
+            List<long> product_list = CategoryLink.GetProductListByCategory(3);
             List<long> test_data = new List<long> { 2 };
-            Assert.AreEqual(test_data, product_list);
-        }
-        */
+            CollectionAssert.AreEqual(test_data, product_list);
+        }*/
+        
     }
 }

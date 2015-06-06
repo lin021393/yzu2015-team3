@@ -13,6 +13,12 @@ namespace team3
     [TestClass]
     public class DataBaseConnectionTest
     {
+
+        public void Init()
+        {
+            DatabaseConnection.Init();
+        }
+
         public DataBaseConnectionTest()
         {
             //
