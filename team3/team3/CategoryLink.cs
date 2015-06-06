@@ -18,7 +18,7 @@ namespace team3
         {
             this._productid = productid;
             this._categoryid = categoryid;
-            isDirty = false;
+            isDirty = true;
         }
 
         public long ProductId

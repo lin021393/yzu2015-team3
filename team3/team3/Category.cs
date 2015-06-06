@@ -18,14 +18,14 @@ namespace team3
         {
             this.Id = 0;
             this.Name = name;
-            isDirty = false;
+            isDirty = true;
         }
 
         private Category(long id, string name)
         {
             this.Id = id;
             this.Name = name;
-            isDirty = true;
+            isDirty = false;
         }
 
         public long Id
@@ -42,7 +42,7 @@ namespace team3
 
         public bool IsSaved()
         {
-            return this.Id > 0 && this.isDirty == true;
+            return this.Id > 0 && this.isDirty == false;
         }
 
         public bool Save()
@@ -50,7 +50,7 @@ namespace team3
             if (IsSaved())
                 return true;
             else if (GetCategoryByName(this._name) != null)
-                return false;
+                return true;
 
             try
             {
