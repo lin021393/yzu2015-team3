@@ -197,13 +197,27 @@ namespace team3
                                 FROM [products]
                                 WHERE [id] = @id";
                     cmd.Parameters.Add(new SQLiteParameter("@id") { Value = ProductId, });
-                    int check = cmd.ExecuteNonQuery();
-                    DatabaseConnection.RemoveConnection(con);
+                    cmd.ExecuteNonQuery();
 
-                    if (check > 0)
+
+                    cmd.CommandText = @"SELECT *  
+                                FROM [products]
+                                WHERE [id] = @id";
+                    cmd.Parameters.Add(new SQLiteParameter("@id") { Value = ProductId, });
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+
+                    if (!reader.Read())
+                    {
+                        DatabaseConnection.RemoveConnection(con);
                         return true;
+                    }
                     else
+                    {
+                        DatabaseConnection.RemoveConnection(con);
                         return false;
+                    }
+                    
                 }
                 else
                 {
