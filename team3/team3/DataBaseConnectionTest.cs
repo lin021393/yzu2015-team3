@@ -16,7 +16,10 @@ namespace team3
         [TestInitialize]
         public void Init()
         {
-            DatabaseConnection.Init();
+            DatabaseConnection.DropTable("users");
+            DatabaseConnection.DropTable("categories");
+            DatabaseConnection.DropTable("products");
+            DatabaseConnection.DropTable("category_link");
         }
 
         public DataBaseConnectionTest()
@@ -87,17 +90,6 @@ namespace team3
            
         }
 
-        [TestMethod]
-        public void TestCreateTable()
-        {
-            try
-            {
-                DatabaseConnection.Init();
-            } 
-            catch (SQLiteException ex)
-            {
-                Assert.Fail(ex.Message);
-            }
-        }
+        
     }
 }

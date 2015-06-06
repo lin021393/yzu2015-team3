@@ -14,6 +14,7 @@ namespace team3
         [TestInitialize]
         public void Init()
         {
+            DatabaseConnection.DropTable("products");
             DatabaseConnection.Init();
         }
 

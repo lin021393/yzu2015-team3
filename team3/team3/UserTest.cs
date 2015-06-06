@@ -9,14 +9,14 @@ namespace team3
         [TestInitialize]
         public void Init()
         {
+            DatabaseConnection.DropTable("users");
             DatabaseConnection.Init();
         }
 
         [TestMethod]
         public void RegisterUser()
         {
-            DatabaseConnection.DropTable("users");
-            DatabaseConnection.Init();
+       
 
             /* 合法帳號,合法密碼,合法信箱 */
             AuthResult regResult = User.Register("accou___n_t1", "passowrd", "passowrd", "example@gmail.com");
