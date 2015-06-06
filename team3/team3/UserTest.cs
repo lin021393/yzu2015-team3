@@ -6,6 +6,12 @@ namespace team3
     [TestClass]
     public class UserTest
     {
+        [TestInitialize]
+        public void Init()
+        {
+            DatabaseConnection.Init();
+        }
+
         [TestMethod]
         public void RegisterUser()
         {
