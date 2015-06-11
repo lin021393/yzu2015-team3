@@ -21,11 +21,15 @@ namespace team3
         public static readonly string USER_REGISTER_PASSWORD_CONFIRM_ERROR = "密碼確認不一致";
         public static readonly string USER_REGISTER_SUCCESSFULLY = "註冊成功";
         public static readonly string USER_REGISTER_FAIL = "註冊失敗";
+
+        public static readonly string USER_EDIT_EMAIL_FORMAT_ERROR = "Email 格式錯誤";
+        public static readonly string USER_EDIT_EMAIL_EXISTS_ERROR = "此Email 已註冊過";
+        public static readonly string USER_EDIT_EMAIL_SUCCESSFULLY = "修改Email成功";
+        public static readonly string USER_EDIT_EMAIL_FAIL = "修改Email失敗";
         
 
-
     }
-
+    
     class StringUtil
     {
         public static bool isValidEmail(string inputEmail)

@@ -184,10 +184,11 @@ namespace team3
             List<string> messages = new List<string>();
             
             cmd.CommandText = @"SELECT * 
-                                FROM [user]
+                                FROM [users]
                                 WHERE [account] = @account AND [password] = @password;";
             cmd.Parameters.Add(new SQLiteParameter("@account") { Value = Account, });
             cmd.Parameters.Add(new SQLiteParameter("@password") { Value = HashUtil.EncryptoSHA1(Password), });
+
 
             SQLiteDataReader reader = cmd.ExecuteReader();
 
@@ -282,6 +283,50 @@ namespace team3
             else
             {
                 errorMessage.Insert(0, Strings.USER_REGISTER_FAIL);
+                retResult = new AuthResult(false, errorMessage, null);
+            }
+
+            return retResult;
+        }
+        public AuthResult EditEmail(string Account, string Password, string Email)
+        {
+            List<string> errorMessage = new List<string>();
+            AuthResult retResult = null;
+
+            if (GetUserByEmail(Email) != null)
+                errorMessage.Add(Strings.USER_EDIT_EMAIL_EXISTS_ERROR);
+            if( errorMessage.Count == 0)
+            {
+
+
+                SQLiteConnection con = DatabaseConnection.GetConnection();
+                SQLiteCommand cmd = con.CreateCommand();
+
+                cmd.CommandText = @"UPDATE [users] 
+                                        SET [email] = @email
+                                        WHERE [account] = @account AND [password] = @password;";
+
+                cmd.Parameters.Add(new SQLiteParameter("@email") { Value = Email, });
+                cmd.Parameters.Add(new SQLiteParameter("@account") { Value = Account, });
+                cmd.Parameters.Add(new SQLiteParameter("@password") { Value = HashUtil.EncryptoSHA1(Password), });
+
+                cmd.ExecuteNonQuery();
+
+                
+                List<string> messages = new List<string>();
+                messages.Add(Strings.USER_EDIT_EMAIL_SUCCESSFULLY);
+
+                User retUser = new User(ID, Account, Email);
+                retResult = new AuthResult(true, messages, retUser);
+                
+                
+                
+
+                DatabaseConnection.RemoveConnection(con);
+            }
+            else
+            {
+                //errorMessage.Insert(0, Strings.USER_REGISTER_FAIL);
                 retResult = new AuthResult(false, errorMessage, null);
             }
 
