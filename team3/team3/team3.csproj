@@ -70,9 +70,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ShoppingCart.cs" />
     <Compile Include="Strings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataBaseConnectionTest.cs" />
+    <Compile Include="ShoppingCartTest.cs" />
     <Compile Include="UserTest.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
