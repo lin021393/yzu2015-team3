@@ -79,7 +79,6 @@ namespace team3
                      "地表最強手機!!!!!!",
                      99
                 );
-
             bool result2 = product.Save();
 
             CategoryLink category_link = new CategoryLink("Nokia 3310", "手機");
@@ -99,7 +98,6 @@ namespace team3
                      "潮到滴水",
                      99
                 );
-
             bool result2 = product.Save();
 
             CategoryLink category_link = new CategoryLink("IPHONE 6S", "手機");
@@ -107,13 +105,67 @@ namespace team3
             Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id));
         }
 
-        /*
+        
         [TestMethod]
         public void TestGetProductListByCategory()
         {
-            List<long> product_list = CategoryLink.GetProductListByCategory(3);
-            List<long> test_data = new List<long> { 2 };
+            Category category = new Category("ABC");
+            bool result1 = category.Save();
+
+            Product product = new Product(
+                     "AAA",
+                     111,
+                     "http://A.jpg",
+                     "A",
+                     99
+                );
+            bool result2 = product.Save();
+
+            Product product2 = new Product(
+                     "BBB",
+                     19990,
+                     "http://B.jpg",
+                     "B",
+                     99
+                );
+            bool result3 = product2.Save();
+
+            CategoryLink category_link = new CategoryLink("AAA", "ABC");
+            Assert.IsTrue(category_link.Save());
+            CategoryLink category_link2 = new CategoryLink("BBB", "ABC");
+            Assert.IsTrue(category_link2.Save());
+
+            List<long> product_list = CategoryLink.GetProductListByCategory(category.Id);
+            List<long> test_data = new List<long> { product.Id, product2.Id };
             CollectionAssert.AreEqual(test_data, product_list);
-        }*/
+        }
+
+        [TestMethod]
+        public void TestGetCategoryListByProduct()
+        {
+            Category category = new Category("ABC");
+            bool result = category.Save();
+
+            Category category2 = new Category("C_");
+            bool result2 = category2.Save();
+
+            Product product = new Product(
+                     "CCC",
+                     0,
+                     "http://C.jpg",
+                     "C",
+                     1
+                );
+            bool result3 = product.Save();
+
+            CategoryLink category_link = new CategoryLink("CCC", "ABC");
+            Assert.IsTrue(category_link.Save());
+            CategoryLink category_link2 = new CategoryLink("CCC", "C_");
+            Assert.IsTrue(category_link2.Save());
+
+            List<long> category_list = CategoryLink.GetCategoryListByProduct(product.Id);
+            List<long> test_data = new List<long> { category.Id, category2.Id };
+            CollectionAssert.AreEqual(test_data, category_list);
+        }
     }
 }

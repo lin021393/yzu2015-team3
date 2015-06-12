@@ -23,9 +23,18 @@ namespace team3
 
         public CategoryLink(string product, string category)
         {
-            this._productid = Product.GetProductByName(product).Id;
-            this._categoryid = Category.GetCategoryByName(category).Id;
-            isDirty = true;
+            if ( Product.GetProductByName(product) != null    &&
+                 Category.GetCategoryByName(category) != null )
+            {
+                this._productid = Product.GetProductByName(product).Id;
+                this._categoryid = Category.GetCategoryByName(category).Id;
+                isDirty = true;
+            }
+            else
+            {
+                this._productid = 0;
+                this._categoryid = 0;
+            }
         }
 
         public long ProductId
@@ -47,8 +56,22 @@ namespace team3
 
         public bool Save()
         {
-            if (IsSaved())
+            if ( this._productid == 0  ||
+                 this._categoryid == 0 )
+                return false;
+            else if (IsSaved())
                 return true;
+            else
+            {
+                if (GetProductListByCategory(this.CategoryId) != null)
+                {
+                    if (GetProductListByCategory(this.CategoryId).Contains(this.ProductId))
+                    {
+                        this.isDirty = false;
+                        return true;
+                    }
+                }
+            }
 
             try
             {
@@ -107,6 +130,7 @@ namespace team3
 
             if (reader.Read())
             {
+                productlist.Add((long)reader["product_id"]);
                 while (reader.Read())
                 {
                     productlist.Add((long)reader["product_id"]);
@@ -139,6 +163,7 @@ namespace team3
 
                 if (reader.Read())
                 {
+                    categorylist.Add((long)reader["category_id"]);
                     while (reader.Read())
                     {
                         categorylist.Add((long)reader["category_id"]);
