@@ -65,7 +65,7 @@ namespace team3
         // public void MyTestCleanup() { }
         //
         #endregion
-
+        
         [TestMethod]
         public void TestAddCategoryLink()
         {
@@ -84,6 +84,27 @@ namespace team3
 
             CategoryLink category_link = new CategoryLink("Nokia 3310", "手機");
             Assert.IsTrue(category_link.Save());
+        }
+
+        [TestMethod]
+        public void TestRemoveCategoryLink()
+        {
+            Category category = new Category("手機");
+            bool result1 = category.Save();
+
+            Product product = new Product(
+                     "IPHONE 6S",
+                     19990,
+                     "http://img.technews.tw/wp-content/uploads/2015/06/15233374520_abea3a452a_z-624x416.jpg",
+                     "潮到滴水",
+                     99
+                );
+
+            bool result2 = product.Save();
+
+            CategoryLink category_link = new CategoryLink("IPHONE 6S", "手機");
+            Assert.IsTrue(category_link.Save());
+            Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id));
         }
 
         /*

@@ -162,7 +162,26 @@ namespace team3
 
         public static bool Remove(long productid, long categoryid)
         {
-            return false;
+            try
+            {
+                SQLiteConnection con = DatabaseConnection.GetConnection();
+                SQLiteCommand cmd = con.CreateCommand();
+                cmd.CommandText = @"DELETE 
+                                    FROM [category_link]
+                                    WHERE [product_id] = @product
+                                    AND [category_id] = @category";
+
+                cmd.Parameters.Add(new SQLiteParameter("@product") { Value = productid, });
+                cmd.Parameters.Add(new SQLiteParameter("@category") { Value = categoryid, });
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                DatabaseConnection.RemoveConnection(con);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
         }
 
     }
