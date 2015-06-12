@@ -58,7 +58,9 @@ namespace team3
             
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [category_link] (
                                     [product_id] INTEGER ,
-                                    [category_id] INTEGER );";
+                                    [category_id] INTEGER,
+                                    FOREIGN KEY (product_id) REFERENCES products(id),
+                                    FOREIGN KEY (category_id) REFERENCES categories(id) );";
             cmd.ExecuteNonQuery();
 
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [users] (

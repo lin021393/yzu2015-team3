@@ -184,6 +184,38 @@ namespace team3
 
         }
 
+        public static Product GetProductByName(string ProductName)
+        {
+
+            SQLiteConnection con = DatabaseConnection.GetConnection();
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"SELECT * 
+                                FROM [products]
+                                WHERE [name] = @name";
+            cmd.Parameters.Add(new SQLiteParameter("@name") { Value = ProductName, });
+            SQLiteDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                Product product = new Product((long)reader["id"],
+                                    reader["name"] as String,
+                                    (long)reader["price"],
+                                    reader["imgUrl"] as String,
+                                    reader["description"] as String,
+                                    (long)reader["remain"]);
+
+                DatabaseConnection.RemoveConnection(con);
+                return product;
+            }
+            else
+            {
+                return null;
+            }
+
+
+        }
+
         public bool DeleteProductById(long ProductId)
         {
             try

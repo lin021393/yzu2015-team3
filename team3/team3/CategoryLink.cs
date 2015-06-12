@@ -14,10 +14,17 @@ namespace team3
         private long _categoryid;
         private bool isDirty = false;
 
-        public CategoryLink(long productid, long categoryid)
+        public CategoryLink(long product, long category)
         {
-            this._productid = productid;
-            this._categoryid = categoryid;
+            this._productid = product;
+            this._categoryid = category;
+            isDirty = true;
+        }
+
+        public CategoryLink(string product, string category)
+        {
+            this._productid = Product.GetProductByName(product).Id;
+            this._categoryid = Category.GetCategoryByName(category).Id;
             isDirty = true;
         }
 

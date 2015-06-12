@@ -6,10 +6,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace team3
 {
     /// <summary>
-    /// CategoryTest 的摘要描述
+    /// UnitTest1 的摘要描述
     /// </summary>
     [TestClass]
-    public class CategoryTest
+    public class CategoryLinkTest
     {
         [TestInitialize]
         public void Init()
@@ -19,7 +19,7 @@ namespace team3
             DatabaseConnection.Init();
         }
 
-        public CategoryTest()
+        public CategoryLinkTest()
         {
             //
             // TODO:  在此加入建構函式的程式碼
@@ -65,51 +65,34 @@ namespace team3
         // public void MyTestCleanup() { }
         //
         #endregion
-        
-        [TestMethod]
-        public void TestAddCategory()
-        {
-            Category category = new Category( "ABC" );
-            Assert.IsTrue(category.Save());
-        }
 
         [TestMethod]
-        public void TestRemoveCategory()
-        {
-            Category category = new Category("123");
-            category.Save();
-            Assert.IsTrue(Category.Remove("123"));
-            Assert.IsFalse(Category.Remove("123"));
-        }
-
-        [TestMethod]
-        public void TestGetCategoryById()
-        {
-            Category category = new Category( "手機" );
-
-            bool result = category.Save();
-
-            Category categoryLoaded = Category.GetCategoryById(category.Id);
-
-            Assert.AreEqual(category.Id, categoryLoaded.Id);
-            Assert.AreEqual(category.Name, categoryLoaded.Name);
-
-            Category.Remove("手機");
-        }
-        
-        
-        [TestMethod]
-        public void TestGetCategoryByName()
+        public void TestAddCategoryLink()
         {
             Category category = new Category("手機");
+            bool result1 = category.Save();
 
-            bool result = category.Save();
+            Product product = new Product(
+                     "Nokia 3310",
+                     111,
+                     "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg",
+                     "地表最強手機!!!!!!",
+                     99
+                );
 
-            Category categoryLoaded = Category.GetCategoryByName("手機");
+            bool result2 = product.Save();
 
-            Assert.AreEqual(category.Id, categoryLoaded.Id);
-            Assert.AreEqual("手機", categoryLoaded.Name);
+            CategoryLink category_link = new CategoryLink("Nokia 3310", "手機");
+            Assert.IsTrue(category_link.Save());
         }
-        
+
+        /*
+        [TestMethod]
+        public void TestGetProductListByCategory()
+        {
+            List<long> product_list = CategoryLink.GetProductListByCategory(3);
+            List<long> test_data = new List<long> { 2 };
+            CollectionAssert.AreEqual(test_data, product_list);
+        }*/
     }
 }
