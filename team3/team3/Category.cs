@@ -87,8 +87,6 @@ namespace team3
                     return true;
 
                 }
-             
-               
             }
             catch (Exception ex)
             {
@@ -151,6 +149,36 @@ namespace team3
                 return null;
             }
 
+        }
+
+        public static List<string> GetCategoryList()
+        {
+            List<string> categorylist = new List<string>();
+            SQLiteConnection con = DatabaseConnection.GetConnection();
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"SELECT * 
+                                FROM [categories]";
+            
+            SQLiteDataReader reader = cmd.ExecuteReader();
+
+
+            if (reader.Read())
+            {
+                categorylist.Add((string)reader["name"]);
+                while (reader.Read())
+                {
+                    categorylist.Add((string)reader["name"]);
+                }
+
+                DatabaseConnection.RemoveConnection(con);
+                return categorylist;
+            }
+            else
+            {
+                DatabaseConnection.RemoveConnection(con);
+                return null;
+            }
         }
 
         public static bool Remove(string CategoryName)

@@ -105,7 +105,6 @@ namespace team3
             Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id));
         }
 
-        
         [TestMethod]
         public void TestGetProductListByCategory()
         {
