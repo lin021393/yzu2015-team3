@@ -212,13 +212,13 @@ namespace team3
                         (string)reader["account"],
                         (string)reader["email"]
                     );
-                messages.Add(Strings.USER_LOGIN_SUCESSFULLY);
+                messages.Add(Message.USER_LOGIN_SUCESSFULLY);
                 retResult = new AuthResult(true, messages, retUser);
                 
             }
             else
             {
-                messages.Add(Strings.USER_LOGIN_FAIL);
+                messages.Add(Message.USER_LOGIN_FAIL);
 
                 retResult = new AuthResult(false, messages , null);
             }
@@ -233,25 +233,25 @@ namespace team3
             AuthResult retResult = null;
 
             if (!(Account.Length >= 6 && Account.Length <= 40))
-                errorMessage.Add(Strings.USER_REGISTER_ACCOUNT_LENGTH_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_ACCOUNT_LENGTH_ERROR);
 
             if (!StringUtil.isVaildAccountFormat(Account))
-                errorMessage.Add(Strings.USER_REGISTER_ACCOUNT_FORMAT_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_ACCOUNT_FORMAT_ERROR);
 
             if (!(Password.Length >= 6 && Password.Length <= 40))
-                errorMessage.Add(Strings.USER_REGISTER_PASSWORD_LENGTH_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_PASSWORD_LENGTH_ERROR);
 
             if (!Password.Equals(ConfirmPassword))
-                errorMessage.Add(Strings.USER_REGISTER_PASSWORD_CONFIRM_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_PASSWORD_CONFIRM_ERROR);
 
             if (!StringUtil.isValidEmail(Email))
-                errorMessage.Add( Strings.USER_REGISTER_EMAIL_FORMAT_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_EMAIL_FORMAT_ERROR);
 
             if( GetUserByAccount(Account) != null)
-                errorMessage.Add(Strings.USER_REGISTER_ACCOUNT_EXISTS);
+                errorMessage.Add(Message.USER_REGISTER_ACCOUNT_EXISTS);
 
             if (GetUserByEmail(Email) != null)
-                errorMessage.Add(Strings.USER_REGISTER_EMAIL_EXISTS_ERROR);
+                errorMessage.Add(Message.USER_REGISTER_EMAIL_EXISTS_ERROR);
             
 
             if( errorMessage.Count == 0)
@@ -280,14 +280,14 @@ namespace team3
                 if (id > 0)
                 {
                     List<string> messages = new List<string>();
-                    messages.Add(Strings.USER_REGISTER_SUCCESSFULLY);
+                    messages.Add(Message.USER_REGISTER_SUCCESSFULLY);
 
                     User retUser = new User(id, Account, Email);
                     retResult = new AuthResult(true, messages, retUser);
                 }
                 else
                 {
-                    errorMessage.Add(Strings.USER_REGISTER_FAIL);
+                    errorMessage.Add(Message.USER_REGISTER_FAIL);
                     retResult = new AuthResult(false, errorMessage, null);
                 }
 
@@ -295,7 +295,7 @@ namespace team3
             }
             else
             {
-                errorMessage.Insert(0, Strings.USER_REGISTER_FAIL);
+                errorMessage.Insert(0, Message.USER_REGISTER_FAIL);
                 retResult = new AuthResult(false, errorMessage, null);
             }
 

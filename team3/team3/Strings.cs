@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace team3
 {
-    class Strings
+    class Message
     {
         public static readonly string USER_LOGIN_SUCESSFULLY = "登入成功";
         public static readonly string USER_LOGIN_FAIL = "登入失敗";

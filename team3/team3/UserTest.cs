@@ -23,7 +23,7 @@ namespace team3
             Assert.IsNotNull(regResult);
             Assert.IsNotNull(regResult.User);
             Assert.IsNotNull(regResult.Messages);
-            Assert.IsTrue(regResult.Messages.Contains(Strings.USER_REGISTER_SUCCESSFULLY));
+            Assert.IsTrue(regResult.Messages.Contains(Message.USER_REGISTER_SUCCESSFULLY));
             Assert.IsTrue(regResult.Result);
             Assert.IsTrue(regResult.User.ID > 0);
             Assert.AreEqual(regResult.User.Account, "accou___n_t1");
@@ -34,8 +34,8 @@ namespace team3
             Assert.IsNotNull(regResult2);
             Assert.IsNull(regResult2.User);
             Assert.IsNotNull(regResult2.Messages);
-            Assert.IsTrue(regResult2.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult2.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_LENGTH_ERROR));
+            Assert.IsTrue(regResult2.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult2.Messages.Contains(Message.USER_REGISTER_ACCOUNT_LENGTH_ERROR));
             Assert.IsFalse(regResult2.Result);
 
             /* 格式不符合帳號(除了底線以外的特殊符號),合法密碼,合法信箱 */
@@ -43,8 +43,8 @@ namespace team3
             Assert.IsNotNull(regResult3);
             Assert.IsNull(regResult3.User);
             Assert.IsNotNull(regResult3.Messages);
-            Assert.IsTrue(regResult3.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult3.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
+            Assert.IsTrue(regResult3.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult3.Messages.Contains(Message.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
             Assert.IsFalse(regResult3.Result);
 
 
@@ -53,8 +53,8 @@ namespace team3
             Assert.IsNotNull(regResult4);
             Assert.IsNull(regResult4.User);
             Assert.IsNotNull(regResult4.Messages);
-            Assert.IsTrue(regResult4.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult4.Messages.Contains(Strings.USER_REGISTER_EMAIL_EXISTS_ERROR));
+            Assert.IsTrue(regResult4.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult4.Messages.Contains(Message.USER_REGISTER_EMAIL_EXISTS_ERROR));
             Assert.IsFalse(regResult4.Result);
 
             /* 已存在帳號,合法密碼,合法信箱 */
@@ -62,8 +62,8 @@ namespace team3
             Assert.IsNotNull(regResult5);
             Assert.IsNull(regResult5.User);
             Assert.IsNotNull(regResult5.Messages);
-            Assert.IsTrue(regResult5.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult5.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_EXISTS));
+            Assert.IsTrue(regResult5.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult5.Messages.Contains(Message.USER_REGISTER_ACCOUNT_EXISTS));
             Assert.IsFalse(regResult5.Result);
 
             /* 已存在帳號,過長密碼,合法信箱 */
@@ -73,8 +73,8 @@ namespace team3
             Assert.IsNotNull(regResult6);
             Assert.IsNull(regResult6.User);
             Assert.IsNotNull(regResult6.Messages);
-            Assert.IsTrue(regResult6.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult6.Messages.Contains(Strings.USER_REGISTER_PASSWORD_LENGTH_ERROR));
+            Assert.IsTrue(regResult6.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult6.Messages.Contains(Message.USER_REGISTER_PASSWORD_LENGTH_ERROR));
             Assert.IsFalse(regResult6.Result);
 
             /* 已存在帳號,確認密碼不一致,合法信箱 */
@@ -82,8 +82,8 @@ namespace team3
             Assert.IsNotNull(regResult7);
             Assert.IsNull(regResult7.User);
             Assert.IsNotNull(regResult7.Messages);
-            Assert.IsTrue(regResult7.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult7.Messages.Contains(Strings.USER_REGISTER_PASSWORD_CONFIRM_ERROR));
+            Assert.IsTrue(regResult7.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult7.Messages.Contains(Message.USER_REGISTER_PASSWORD_CONFIRM_ERROR));
             Assert.IsFalse(regResult7.Result);
 
             /* 合法帳號,合法密碼,空白信箱 */
@@ -91,8 +91,8 @@ namespace team3
             Assert.IsNotNull(regResult8);
             Assert.IsNull(regResult8.User);
             Assert.IsNotNull(regResult8.Messages);
-            Assert.IsTrue(regResult8.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult8.Messages.Contains(Strings.USER_REGISTER_EMAIL_FORMAT_ERROR));
+            Assert.IsTrue(regResult8.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult8.Messages.Contains(Message.USER_REGISTER_EMAIL_FORMAT_ERROR));
             Assert.IsFalse(regResult8.Result);
 
             /* 空白帳號,合法密碼,合法信箱 */
@@ -100,8 +100,8 @@ namespace team3
             Assert.IsNotNull(regResult9);
             Assert.IsNull(regResult9.User);
             Assert.IsNotNull(regResult9.Messages);
-            Assert.IsTrue(regResult9.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult9.Messages.Contains(Strings.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
+            Assert.IsTrue(regResult9.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult9.Messages.Contains(Message.USER_REGISTER_ACCOUNT_FORMAT_ERROR));
             Assert.IsFalse(regResult9.Result);
 
             /* 合法帳號,空白密碼,合法信箱 */
@@ -109,8 +109,8 @@ namespace team3
             Assert.IsNotNull(regResult10);
             Assert.IsNull(regResult10.User);
             Assert.IsNotNull(regResult10.Messages);
-            Assert.IsTrue(regResult10.Messages.Contains(Strings.USER_REGISTER_FAIL));
-            Assert.IsTrue(regResult10.Messages.Contains(Strings.USER_REGISTER_PASSWORD_LENGTH_ERROR));
+            Assert.IsTrue(regResult10.Messages.Contains(Message.USER_REGISTER_FAIL));
+            Assert.IsTrue(regResult10.Messages.Contains(Message.USER_REGISTER_PASSWORD_LENGTH_ERROR));
             Assert.IsFalse(regResult10.Result);
 
         }
@@ -126,7 +126,7 @@ namespace team3
             Assert.IsNotNull(regResult);
             Assert.IsNotNull(regResult.User);
             Assert.IsNotNull(regResult.Messages);
-            Assert.IsTrue(regResult.Messages.Contains(Strings.USER_REGISTER_SUCCESSFULLY));
+            Assert.IsTrue(regResult.Messages.Contains(Message.USER_REGISTER_SUCCESSFULLY));
             Assert.IsTrue(regResult.Result);
             Assert.IsTrue(regResult.User.ID > 0);
             Assert.AreEqual(regResult.User.Account, "accou___n_t1");
@@ -136,7 +136,7 @@ namespace team3
             AuthResult regResult2 = User.Login("accou___n_t1", "passowrd");
             Assert.IsNotNull(regResult2.User);
             Assert.IsNotNull(regResult2.Messages);
-            Assert.IsTrue(regResult2.Messages.Contains(Strings.USER_LOGIN_SUCESSFULLY));
+            Assert.IsTrue(regResult2.Messages.Contains(Message.USER_LOGIN_SUCESSFULLY));
             Assert.IsTrue(regResult2.Result);
             Assert.IsTrue(regResult2.User.ID > 0);
 
