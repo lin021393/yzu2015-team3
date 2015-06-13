@@ -118,7 +118,7 @@ namespace team3
             bool result2 = category2.Save();
 
             Category category3 = new Category("B");
-            bool result3 = category2.Save();
+            bool result3 = category3.Save();
 
             List<string> category_list = Category.GetCategoryList();
             List<string> test_data = new List<string> { category.Name, category2.Name, category3.Name };
