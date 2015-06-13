@@ -70,7 +70,13 @@ namespace team3
         public void TestAddCategory()
         {
             Category category = new Category( "ABC" );
-            Assert.IsTrue(category.Save());
+            Assert.IsTrue(category.Save().Success);
+
+            Category category2 = new Category("   ");
+            Assert.IsFalse(category2.Save().Success);
+
+            Category category3 = new Category("");
+            Assert.IsFalse(category3.Save().Success);
         }
 
         [TestMethod]
@@ -87,7 +93,7 @@ namespace team3
         public void TestGetCategoryById()
         {
             Category category = new Category( "手機" );
-            bool result = category.Save();
+            bool result = category.Save().Success;
 
             Category categoryLoaded = Category.GetCategoryById(category.Id);
 
@@ -100,7 +106,7 @@ namespace team3
         public void TestGetCategoryByName()
         {
             Category category = new Category("手機");
-            bool result = category.Save();
+            bool result = category.Save().Success;
 
             Category categoryLoaded = Category.GetCategoryByName("手機");
 
@@ -112,13 +118,13 @@ namespace team3
         public void TestGetCategoryList()
         {
             Category category = new Category("手機");
-            bool result = category.Save();
+            bool result = category.Save().Success;
 
             Category category2 = new Category("A");
-            bool result2 = category2.Save();
+            bool result2 = category2.Save().Success;
 
             Category category3 = new Category("B");
-            bool result3 = category3.Save();
+            bool result3 = category3.Save().Success;
 
             List<string> category_list = Category.GetCategoryList();
             List<string> test_data = new List<string> { category.Name, category2.Name, category3.Name };

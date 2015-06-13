@@ -8,6 +8,14 @@ using System.Data.SQLite;
 
 namespace team3
 {
+    class CategoryResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+        
+        
+    }
+
     class Category
     {
         private long _id;
@@ -45,12 +53,15 @@ namespace team3
             return this.Id > 0 && this.isDirty == false;
         }
 
-        public bool Save()
+        public CategoryResult Save()
         {
+            if (this.Name.Trim() == "")
+                return new CategoryResult {Success = false};
+
             if (IsSaved())
-                return true;
-            else if (GetCategoryByName(this._name) != null)
-                return true;
+                return new CategoryResult { Success = true };
+            else if (GetCategoryByName(this.Name) != null)
+                return new CategoryResult { Success = true };
 
             try
             {
@@ -72,7 +83,7 @@ namespace team3
 
                     this.Id = (long)cmd.ExecuteScalar();
                     DatabaseConnection.RemoveConnection(con);
-                    return this.Id > 0;
+                    return new CategoryResult { Success = true };
                 }
                 else
                 {
@@ -84,14 +95,14 @@ namespace team3
                     int res = cmd.ExecuteNonQuery();
 
                     DatabaseConnection.RemoveConnection(con);
-                    return true;
+                    return new CategoryResult { Success = true };
 
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new CategoryResult { Success = false };
             }
 
         }

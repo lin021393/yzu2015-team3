@@ -70,7 +70,7 @@ namespace team3
         public void TestAddCategoryLink()
         {
             Category category = new Category("手機");
-            bool result1 = category.Save();
+            bool result1 = category.Save().Success;
 
             Product product = new Product(
                      "Nokia 3310",
@@ -89,7 +89,7 @@ namespace team3
         public void TestRemoveCategoryLink()
         {
             Category category = new Category("手機");
-            bool result1 = category.Save();
+            bool result1 = category.Save().Success;
 
             Product product = new Product(
                      "IPHONE 6S",
@@ -109,7 +109,7 @@ namespace team3
         public void TestGetProductListByCategory()
         {
             Category category = new Category("ABC");
-            bool result1 = category.Save();
+            bool result1 = category.Save().Success;
 
             Product product = new Product(
                      "AAA",
@@ -143,10 +143,10 @@ namespace team3
         public void TestGetCategoryListByProduct()
         {
             Category category = new Category("ABC");
-            bool result = category.Save();
+            bool result = category.Save().Success;
 
             Category category2 = new Category("C_");
-            bool result2 = category2.Save();
+            bool result2 = category2.Save().Success;
 
             Product product = new Product(
                      "CCC",
