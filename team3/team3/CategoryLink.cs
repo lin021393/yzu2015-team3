@@ -8,6 +8,12 @@ using System.Data.SQLite;
 
 namespace team3
 {
+    class CategoryLinkResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
+
     class CategoryLink
     {
         private long _productid;
@@ -16,25 +22,38 @@ namespace team3
 
         public CategoryLink(long product, long category)
         {
-            this._productid = product;
-            this._categoryid = category;
+            Product product_temp = Product.GetProductById(product);
+            Category category_temp = Category.GetCategoryById(category);
+
+            if (product_temp == null)
+                this._productid = 0;
+            else
+                this._productid = product_temp.Id;
+
+            if (category_temp == null)
+                this._categoryid = 0;
+            else
+                this._categoryid = category_temp.Id;
+
             isDirty = true;
         }
 
         public CategoryLink(string product, string category)
         {
-            if ( Product.GetProductByName(product) != null    &&
-                 Category.GetCategoryByName(category) != null )
-            {
-                this._productid = Product.GetProductByName(product).Id;
-                this._categoryid = Category.GetCategoryByName(category).Id;
-                isDirty = true;
-            }
-            else
-            {
+            Product product_temp = Product.GetProductByName(product);
+            Category category_temp = Category.GetCategoryByName(category);
+
+            if (product_temp == null)
                 this._productid = 0;
+            else
+                this._productid = product_temp.Id;
+
+            if (category_temp == null)
                 this._categoryid = 0;
-            }
+            else
+                this._categoryid = category_temp.Id;
+            
+            isDirty = true;
         }
 
         public long ProductId
@@ -54,13 +73,14 @@ namespace team3
             return this.isDirty == false;
         }
 
-        public bool Save()
+        public CategoryLinkResult Save()
         {
-            if ( this._productid == 0  ||
-                 this._categoryid == 0 )
-                return false;
+            if ( this._productid == 0)
+                return new CategoryLinkResult { Success = false, Message = "商品不存在" };
+            else if (this._categoryid == 0 )
+                return new CategoryLinkResult { Success = false, Message = "分類不存在" };
             else if (IsSaved())
-                return true;
+                return new CategoryLinkResult { Success = true, Message = "分類已儲存" };
             else
             {
                 if (GetProductListByCategory(this.CategoryId) != null)
@@ -68,7 +88,7 @@ namespace team3
                     if (GetProductListByCategory(this.CategoryId).Contains(this.ProductId))
                     {
                         this.isDirty = false;
-                        return true;
+                        return new CategoryLinkResult { Success = true, Message = "分類已儲存" };
                     }
                 }
             }
@@ -78,39 +98,31 @@ namespace team3
                 SQLiteConnection con = DatabaseConnection.GetConnection();
                 SQLiteCommand cmd = con.CreateCommand();
 
-                if (this.ProductId > 0 && this.CategoryId > 0)
-                {
-                    cmd.CommandText = @"INSERT INTO [category_link] (
+
+                cmd.CommandText = @"INSERT INTO [category_link] (
                                 [product_id], 
                                 [category_id]
                                ) VALUES ( @productid, @categoryid )";
                     
-                    cmd.Parameters.Add(new SQLiteParameter("@productid") { Value = this.ProductId, });
-                    cmd.Parameters.Add(new SQLiteParameter("@categoryid") { Value = this.CategoryId, });
+                cmd.Parameters.Add(new SQLiteParameter("@productid") { Value = this.ProductId, });
+                cmd.Parameters.Add(new SQLiteParameter("@categoryid") { Value = this.CategoryId, });
+                
+                cmd.ExecuteNonQuery();
+                
+                string sql = "SELECT last_insert_rowid()";
+                cmd = new SQLiteCommand(sql, con);
 
-                    cmd.ExecuteNonQuery();
+                DatabaseConnection.RemoveConnection(con);
 
-                    string sql = "SELECT last_insert_rowid()";
-                    cmd = new SQLiteCommand(sql, con);
+                this.isDirty = false;
 
-                    DatabaseConnection.RemoveConnection(con);
-
-                    this.isDirty = false;
-
-                    return true;
-                }
-                else
-                {
-                    DatabaseConnection.RemoveConnection(con);
-                    return false;
-                }
-
+                return new CategoryLinkResult { Success = true, Message = "分類儲存成功" };
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new CategoryLinkResult { Success = false, Message = "資料庫存取失敗" };
             }
 
         }

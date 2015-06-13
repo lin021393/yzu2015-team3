@@ -82,7 +82,7 @@ namespace team3
             bool result2 = product.Save();
 
             CategoryLink category_link = new CategoryLink("Nokia 3310", "手機");
-            Assert.IsTrue(category_link.Save());
+            Assert.IsTrue(category_link.Save().Success);
         }
 
         [TestMethod]
@@ -101,7 +101,7 @@ namespace team3
             bool result2 = product.Save();
 
             CategoryLink category_link = new CategoryLink("IPHONE 6S", "手機");
-            Assert.IsTrue(category_link.Save());
+            category_link.Save();
             Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id));
         }
 
@@ -130,9 +130,9 @@ namespace team3
             bool result3 = product2.Save();
 
             CategoryLink category_link = new CategoryLink("AAA", "ABC");
-            Assert.IsTrue(category_link.Save());
+            category_link.Save();
             CategoryLink category_link2 = new CategoryLink("BBB", "ABC");
-            Assert.IsTrue(category_link2.Save());
+            category_link2.Save();
 
             List<long> product_list = CategoryLink.GetProductListByCategory(category.Id);
             List<long> test_data = new List<long> { product.Id, product2.Id };
@@ -158,9 +158,9 @@ namespace team3
             bool result3 = product.Save();
 
             CategoryLink category_link = new CategoryLink("CCC", "ABC");
-            Assert.IsTrue(category_link.Save());
+            category_link.Save();
             CategoryLink category_link2 = new CategoryLink("CCC", "C_");
-            Assert.IsTrue(category_link2.Save());
+            category_link2.Save();
 
             List<long> category_list = CategoryLink.GetCategoryListByProduct(product.Id);
             List<long> test_data = new List<long> { category.Id, category2.Id };

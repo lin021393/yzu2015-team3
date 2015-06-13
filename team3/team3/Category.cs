@@ -12,8 +12,6 @@ namespace team3
     {
         public bool Success { get; set; }
         public string Message { get; set; }
-        
-        
     }
 
     class Category
@@ -56,12 +54,15 @@ namespace team3
         public CategoryResult Save()
         {
             if (this.Name.Trim() == "")
-                return new CategoryResult {Success = false};
+                return new CategoryResult {Success = false, Message = "分類名稱不能為空"};
 
             if (IsSaved())
-                return new CategoryResult { Success = true };
+                return new CategoryResult { Success = true, Message = "商品已儲存" };
             else if (GetCategoryByName(this.Name) != null)
+            {
+                this.isDirty = false;
                 return new CategoryResult { Success = true };
+            }
 
             try
             {
@@ -83,7 +84,10 @@ namespace team3
 
                     this.Id = (long)cmd.ExecuteScalar();
                     DatabaseConnection.RemoveConnection(con);
-                    return new CategoryResult { Success = true };
+
+                    this.isDirty = false;
+
+                    return new CategoryResult { Success = true, Message = "商品已儲存" };
                 }
                 else
                 {
@@ -93,16 +97,18 @@ namespace team3
 
                     cmd.Parameters.Add(new SQLiteParameter("@name") { Value = this.Name, });
                     int res = cmd.ExecuteNonQuery();
-
                     DatabaseConnection.RemoveConnection(con);
-                    return new CategoryResult { Success = true };
+
+                    this.isDirty = false;
+
+                    return new CategoryResult { Success = true, Message = "商品已儲存" };
 
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new CategoryResult { Success = false };
+                return new CategoryResult { Success = false, Message = "資料庫存取失敗" };
             }
 
         }
@@ -192,27 +198,33 @@ namespace team3
             }
         }
 
-        public static bool Remove(string CategoryName)
+        public static CategoryResult Remove(string CategoryName)
         {
-            if(GetCategoryByName(CategoryName) != null &&
-               CategoryLink.GetProductListByCategory(GetCategoryByName(CategoryName).Id) == null)
-            {
-                SQLiteConnection con = DatabaseConnection.GetConnection();
-                SQLiteCommand cmd = con.CreateCommand();
-
-
-                cmd.CommandText = @"DELETE 
-                                    FROM [categories]
-                                    WHERE [name] = @name";
-                cmd.Parameters.Add(new SQLiteParameter("@name") { Value = CategoryName, });
-                SQLiteDataReader reader = cmd.ExecuteReader();
-
-                DatabaseConnection.RemoveConnection(con);
-                return true;
-            }
+            if (GetCategoryByName(CategoryName) == null)
+                return new CategoryResult { Success = false, Message = "分類不存在" };
+            else if (CategoryLink.GetProductListByCategory(GetCategoryByName(CategoryName).Id) != null)
+                return new CategoryResult { Success = false, Message = "分類尚有商品存在" };
             else
             {
-                return false;
+                try
+                {
+                    SQLiteConnection con = DatabaseConnection.GetConnection();
+                    SQLiteCommand cmd = con.CreateCommand();
+
+                    cmd.CommandText = @"DELETE 
+                                        FROM [categories]
+                                        WHERE [name] = @name";
+                    cmd.Parameters.Add(new SQLiteParameter("@name") { Value = CategoryName, });
+                    SQLiteDataReader reader = cmd.ExecuteReader();
+
+                    DatabaseConnection.RemoveConnection(con);
+                    return new CategoryResult { Success = true, Message = "分類移除成功" };
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return new CategoryResult { Success = false, Message = "資料庫存取失敗" };
+                }
             }
         }
     }

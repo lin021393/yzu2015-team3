@@ -73,10 +73,14 @@ namespace team3
             Assert.IsTrue(category.Save().Success);
 
             Category category2 = new Category("   ");
-            Assert.IsFalse(category2.Save().Success);
+            var result = category2.Save();
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("分類名稱不能為空", result.Message); 
 
             Category category3 = new Category("");
-            Assert.IsFalse(category3.Save().Success);
+            var result1 = category3.Save();
+            Assert.IsFalse(result1.Success);
+            Assert.AreEqual("分類名稱不能為空", result1.Message);
         }
 
         [TestMethod]
@@ -85,8 +89,11 @@ namespace team3
             Category category = new Category("123");
             category.Save();
 
-            Assert.IsTrue(Category.Remove("123"));
-            Assert.IsFalse(Category.Remove("123"));
+            Assert.IsTrue(Category.Remove("123").Success);
+
+            var result = Category.Remove("123");
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("分類不存在", result.Message);
         }
 
         [TestMethod]
@@ -99,8 +106,7 @@ namespace team3
 
             Assert.AreEqual(category.Id, categoryLoaded.Id);
             Assert.AreEqual(category.Name, categoryLoaded.Name);
-        }
-        
+        }  
         
         [TestMethod]
         public void TestGetCategoryByName()
@@ -129,8 +135,6 @@ namespace team3
             List<string> category_list = Category.GetCategoryList();
             List<string> test_data = new List<string> { category.Name, category2.Name, category3.Name };
             CollectionAssert.AreEqual(test_data, category_list);
-
-
         }
 
     }
