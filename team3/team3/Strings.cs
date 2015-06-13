@@ -14,8 +14,10 @@ namespace team3
 
         public static readonly string USER_REGISTER_ACCOUNT_LENGTH_ERROR = "請確認帳號長度為6個字元以上，40個字元以內";
         public static readonly string USER_REGISTER_ACCOUNT_FORMAT_ERROR = "請確認帳號是由英文字、數字、底線組成";
+        public static readonly string USER_REGISTER_PASSWORD_LENGTH_ERROR = "請確認密碼長度為6個字元以上，40個字元以內";
+        public static readonly string USER_REGISTER_PASSWORD_FORMAT_ERROR = "請確認密碼是由英文字、數字、底線組成";
         public static readonly string USER_REGISTER_ACCOUNT_EXISTS = "此帳號已註冊過";
-        public static readonly string USER_REGISTER_PASSWORD_LENGTH_ERROR = "請確認帳號長度為6個字元以上，40個字元以內";
+        public static readonly string USER_REGISTER_PASSWORD_EXISTS = "此密碼已註冊過";       
         public static readonly string USER_REGISTER_EMAIL_FORMAT_ERROR = "Email 格式錯誤";
         public static readonly string USER_REGISTER_EMAIL_EXISTS_ERROR = "此Email 已註冊過";
         public static readonly string USER_REGISTER_PASSWORD_CONFIRM_ERROR = "密碼確認不一致";
@@ -53,5 +55,17 @@ namespace team3
             else
                 return false;
         }
+
+        public static bool isVaildPasswordFormat(string inputPassword)
+        {
+            string strRegex = @"[A-Za-z0-9_]{6}";
+            Regex re = new Regex(strRegex);
+            if (re.IsMatch(inputPassword))
+                return true;
+            else
+                return false;
+        }
+
+
     }
 }

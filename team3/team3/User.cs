@@ -41,13 +41,15 @@ namespace team3
         private long _id;
         private string _account = "";
         private string _email = "";
+        private string _password = "";
         private bool isDirty = false;
         
-        private User(long Id, string Account, string Email)
+        private User(long Id, string Account, string Email, string Password)
         {
             this._id = Id;
             this._account = Account;
             this._email = Email;
+            this._password = Password;
             this.isDirty = false;
         }
 
@@ -67,11 +69,30 @@ namespace team3
             internal set { this._email = value; this.isDirty = true; }
         }
 
+        public string Password
+        {
+            get { return this._password; }
+            internal set { this._password = value; this.isDirty = true; }        
+        }
+
         public bool EditEmail(string Email)
         {
             if (StringUtil.isValidEmail(Email))
             {
                 this.Email = Email;
+                return this.Save();
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool EditPassword(string Password)
+        {
+            if (StringUtil.isVaildPasswordFormat(Password))
+            {
+                this.Password = Password;
                 return this.Save();
             }
             else
@@ -123,7 +144,8 @@ namespace team3
                retUser =  new User(
                       (long)reader["id"],
                       (string)reader["account"],
-                      (string)reader["email"]
+                      (string)reader["email"],
+                      (string)reader["password"]
                   );
                 
             }
@@ -151,7 +173,8 @@ namespace team3
                 retUser = new User(
                        (long)reader["id"],
                        (string)reader["account"],
-                       (string)reader["email"]
+                       (string)reader["email"],
+                       (string)reader["password"]
                    );
 
             }
@@ -179,7 +202,8 @@ namespace team3
                 retUser = new User(
                        (long)reader["id"],
                        (string)reader["account"],
-                       (string)reader["email"]
+                       (string)reader["email"],
+                       (string)reader["password"]
                    );
 
             }
@@ -210,7 +234,8 @@ namespace team3
                 User retUser = new User(
                         (long)reader["id"],
                         (string)reader["account"],
-                        (string)reader["email"]
+                        (string)reader["email"],
+                        (string)reader["password"]
                     );
                 messages.Add(Message.USER_LOGIN_SUCESSFULLY);
                 retResult = new AuthResult(true, messages, retUser);
@@ -282,7 +307,7 @@ namespace team3
                     List<string> messages = new List<string>();
                     messages.Add(Message.USER_REGISTER_SUCCESSFULLY);
 
-                    User retUser = new User(id, Account, Email);
+                    User retUser = new User(id, Account, Email, Password);
                     retResult = new AuthResult(true, messages, retUser);
                 }
                 else

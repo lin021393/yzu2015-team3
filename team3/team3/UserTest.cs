@@ -142,6 +142,12 @@ namespace team3
 
             /* 更改信箱 */
             Assert.IsTrue(regResult2.User.EditEmail("example2@gmail.com"));
+            Assert.IsTrue(regResult2.User.EditEmail("example3@gmail.com"));
+
+
+
+
+
        /*   AuthResult regResult3 = regResult2.User.EditEmail("accou___n_t1", "passowrd", "example2@gmail.com");
             Assert.IsNotNull(regResult3);
             Assert.IsNotNull(regResult3.User);
@@ -153,5 +159,43 @@ namespace team3
 
 
         }
+
+        [TestMethod]
+        public void EditUserPassword()
+        {
+
+            //要確認密碼後再能更改  不能更改已存在的電子郵件
+            /* 修改信箱 */
+
+            /* 合法帳號,合法密碼,合法信箱 */
+            AuthResult regResult = User.Register("accou___n_t1", "passowrd", "passowrd", "example@gmail.com");
+            Assert.IsNotNull(regResult);
+            Assert.IsNotNull(regResult.User);
+            Assert.IsNotNull(regResult.Messages);
+            Assert.IsTrue(regResult.Messages.Contains(Message.USER_REGISTER_SUCCESSFULLY));
+            Assert.IsTrue(regResult.Result);
+            Assert.IsTrue(regResult.User.ID > 0);
+            Assert.AreEqual(regResult.User.Account, "accou___n_t1");
+            Assert.AreEqual(regResult.User.Email, "example@gmail.com");
+
+            /* 登錄 */
+            AuthResult regResult2 = User.Login("accou___n_t1", "passowrd");
+            Assert.IsNotNull(regResult2.User);
+            Assert.IsNotNull(regResult2.Messages);
+            Assert.IsTrue(regResult2.Messages.Contains(Message.USER_LOGIN_SUCESSFULLY));
+            Assert.IsTrue(regResult2.Result);
+            Assert.IsTrue(regResult2.User.ID > 0);
+
+            /* 修改密碼 */
+            Assert.IsTrue(regResult2.User.EditPassword("casdf123123"));
+            Assert.IsTrue(regResult2.User.EditPassword("QWQ@W@87878787"));
+            Assert.IsTrue(regResult2.User.EditPassword("lin021393"));
+            //Assert.IsTrue(regResult2.User.EditPassword(""));
+            //Assert.IsTrue(regResult2.User.EditPassword(" "));
+            
+
+
+        }
+            
     }
 }
