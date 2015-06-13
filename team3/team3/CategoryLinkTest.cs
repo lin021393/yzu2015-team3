@@ -102,7 +102,7 @@ namespace team3
 
             CategoryLink category_link = new CategoryLink("IPHONE 6S", "手機");
             category_link.Save();
-            Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id));
+            Assert.IsTrue(CategoryLink.Remove(product.Id,category.Id).Success);
         }
 
         [TestMethod]

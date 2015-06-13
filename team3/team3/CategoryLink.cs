@@ -80,7 +80,7 @@ namespace team3
             else if (this._categoryid == 0 )
                 return new CategoryLinkResult { Success = false, Message = "分類不存在" };
             else if (IsSaved())
-                return new CategoryLinkResult { Success = true, Message = "分類已儲存" };
+                return new CategoryLinkResult { Success = true, Message = "商品分類已儲存" };
             else
             {
                 if (GetProductListByCategory(this.CategoryId) != null)
@@ -88,7 +88,7 @@ namespace team3
                     if (GetProductListByCategory(this.CategoryId).Contains(this.ProductId))
                     {
                         this.isDirty = false;
-                        return new CategoryLinkResult { Success = true, Message = "分類已儲存" };
+                        return new CategoryLinkResult { Success = true, Message = "商品分類已儲存" };
                     }
                 }
             }
@@ -116,7 +116,7 @@ namespace team3
 
                 this.isDirty = false;
 
-                return new CategoryLinkResult { Success = true, Message = "分類儲存成功" };
+                return new CategoryLinkResult { Success = true, Message = "商品分類儲存成功" };
 
             }
             catch (Exception ex)
@@ -197,7 +197,7 @@ namespace team3
             }
         }
 
-        public static bool Remove(long productid, long categoryid)
+        public static CategoryLinkResult Remove(long productid, long categoryid)
         {
             try
             {
@@ -212,12 +212,12 @@ namespace team3
                 cmd.Parameters.Add(new SQLiteParameter("@category") { Value = categoryid, });
                 SQLiteDataReader reader = cmd.ExecuteReader();
                 DatabaseConnection.RemoveConnection(con);
-                return true;
+                return new CategoryLinkResult { Success = true, Message = "刪除商品分類成功" };
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new CategoryLinkResult { Success = false, Message = "資料庫存取失敗" };
             }
         }
 
