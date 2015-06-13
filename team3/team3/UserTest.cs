@@ -141,7 +141,8 @@ namespace team3
             Assert.IsTrue(regResult2.User.ID > 0);
 
             /* 更改信箱 */
-       /*     AuthResult regResult3 = regResult2.User.EditEmail("accou___n_t1", "passowrd", "example2@gmail.com");
+            Assert.IsTrue(regResult2.User.EditEmail("example2@gmail.com"));
+       /*   AuthResult regResult3 = regResult2.User.EditEmail("accou___n_t1", "passowrd", "example2@gmail.com");
             Assert.IsNotNull(regResult3);
             Assert.IsNotNull(regResult3.User);
             Assert.IsNotNull(regResult3.Messages);
