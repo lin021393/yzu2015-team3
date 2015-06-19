@@ -137,5 +137,16 @@ namespace team3
             CollectionAssert.AreEqual(test_data, category_list);
         }
 
+        [TestMethod]
+        public void TestEditCategory()
+        {
+            Category category = new Category("AAA");
+            Assert.IsTrue(category.Save().Success);
+
+            var result = Category.EditCategory("AAA","BBB");
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("分類名稱更改成功", result.Message);
+        }
+
     }
 }

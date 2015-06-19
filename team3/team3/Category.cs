@@ -31,7 +31,7 @@ namespace team3
         {
             this.Id = id;
             this.Name = name;
-            isDirty = false;
+            isDirty = true;
         }
 
         public long Id
@@ -73,8 +73,8 @@ namespace team3
                 if (this.Id == 0)
                 {
                     cmd.CommandText = @"INSERT INTO [categories] (
-                                [name]
-                               ) VALUES ( @name )";
+                                      [name]
+                                      ) VALUES ( @name )";
 
                     cmd.Parameters.Add(new SQLiteParameter("@name") { Value = this.Name, });
                     cmd.ExecuteNonQuery();
@@ -96,7 +96,8 @@ namespace team3
                                         WHERE [id] = @id";
 
                     cmd.Parameters.Add(new SQLiteParameter("@name") { Value = this.Name, });
-                    int res = cmd.ExecuteNonQuery();
+                    cmd.Parameters.Add(new SQLiteParameter("@id") { Value = Id, });
+                    cmd.ExecuteNonQuery();
                     DatabaseConnection.RemoveConnection(con);
 
                     this.isDirty = false;
@@ -225,6 +226,24 @@ namespace team3
                     Console.WriteLine(ex.Message);
                     return new CategoryResult { Success = false, Message = "資料庫存取失敗" };
                 }
+            }
+        }
+
+        public static CategoryResult EditCategory(string OldData, string NewData)
+        {
+            CategoryResult result;
+            Category category = Category.GetCategoryByName(OldData);
+            category.Name = NewData;
+            category.isDirty = true;
+            result =  category.Save();
+
+            if(result.Success == true)
+            {
+                return new CategoryResult { Success = true, Message = "分類名稱更改成功" };
+            }
+            else
+            {
+                return result;
             }
         }
     }

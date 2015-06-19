@@ -145,9 +145,6 @@ namespace team3
             Assert.IsTrue(regResult2.User.EditEmail("example3@gmail.com"));
 
 
-
-
-
        /*   AuthResult regResult3 = regResult2.User.EditEmail("accou___n_t1", "passowrd", "example2@gmail.com");
             Assert.IsNotNull(regResult3);
             Assert.IsNotNull(regResult3.User);
@@ -190,8 +187,8 @@ namespace team3
             Assert.IsTrue(regResult2.User.EditPassword("casdf123123"));
             Assert.IsTrue(regResult2.User.EditPassword("QWQ@W@87878787"));
             Assert.IsTrue(regResult2.User.EditPassword("lin021393"));
-            //Assert.IsTrue(regResult2.User.EditPassword(""));
-            //Assert.IsTrue(regResult2.User.EditPassword(" "));
+            Assert.IsFalse(regResult2.User.EditPassword(""));
+            Assert.IsFalse(regResult2.User.EditPassword(" "));
             
 
 
