@@ -15,7 +15,7 @@ namespace team3
             DatabaseConnection.Init();
         }
         [TestMethod]
-        public void TestCartProductLimit()//測試購買數量大於商品庫存會return false
+        public void TestCartProductLimit()//測試購買數量大於商品庫存會return 商品數量超出庫存
         {
             int orderId = 1;//紀錄同一個使用者的購物車他的orderId都相同
             Product product = new Product(
@@ -30,7 +30,9 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(orderId, productLoaded.Id, productLoaded.Name, productLoaded.Price, 100);//買100隻但商品只有99隻
-            Assert.IsFalse(cart.IsLimitProduct(productLoaded.Remain));
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsFalse(result.Success);
+            Assert.AreEqual("購買商品數量超出庫存", result.Message);
         }
         [TestMethod]
         public void TestBuyItDirectly()//直接購買
@@ -48,8 +50,13 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(orderId, productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            Assert.IsTrue(cart.IsLimitProduct(productLoaded.Remain));
-            Assert.IsTrue(cart.SaveDirectly());
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("庫存足夠", result.Message);
+
+            CartResult result2 = cart.SaveDirectly();
+            Assert.IsTrue(result2.Success);
+            Assert.AreEqual("單品結帳成功", result2.Message);
 
         }
         [TestMethod]
@@ -68,7 +75,10 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(orderId, productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            Assert.IsTrue(cart.IsLimitProduct(productLoaded.Remain));
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("庫存足夠", result.Message);
+            
             cart.AddToCart();
             //
             Product product2 = new Product(
@@ -83,7 +93,10 @@ namespace team3
             Assert.IsNotNull(productLoaded2);
 
             ShoppingCart cart2 = new ShoppingCart(orderId, productLoaded2.Id, productLoaded2.Name, productLoaded2.Price, 3);
-            Assert.IsTrue(cart2.IsLimitProduct(productLoaded2.Remain));
+            CartResult result2 = cart.IsLimitProduct(productLoaded2.Remain);
+            Assert.IsTrue(result2.Success);
+            Assert.AreEqual("庫存足夠", result2.Message);
+            
             cart2.AddToCart();
 
             List<ShoppingCart> cartLoaded= ShoppingCart.GetCartInfo();
@@ -122,7 +135,10 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(orderId, productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            Assert.IsTrue(cart.IsLimitProduct(productLoaded.Remain));
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("庫存足夠", result.Message);
+           
             cart.AddToCart();
             //
             Product product2 = new Product(
@@ -137,10 +153,15 @@ namespace team3
             Assert.IsNotNull(productLoaded2);
 
             ShoppingCart cart2 = new ShoppingCart(orderId, productLoaded2.Id, productLoaded2.Name, productLoaded2.Price, 3);
-            Assert.IsTrue(cart2.IsLimitProduct(productLoaded2.Remain));
+            CartResult result2 = cart2.IsLimitProduct(productLoaded2.Remain);
+            Assert.IsTrue(result2.Success);
+            Assert.AreEqual("庫存足夠", result2.Message);
+           
             cart2.AddToCart();
 
-            Assert.IsTrue(cart2.SaveFromCart());
+            CartResult result3 = cart2.SaveFromCart();
+            Assert.IsTrue(result3.Success);
+            Assert.AreEqual("購物車結帳成功", result3.Message);
             cart2.empty_cart();
 
         }
@@ -160,7 +181,10 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(orderId, productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            Assert.IsTrue(cart.IsLimitProduct(productLoaded.Remain));
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("庫存足夠", result.Message);
+           
             cart.AddToCart();
             //
             Product product2 = new Product(
@@ -175,11 +199,16 @@ namespace team3
             Assert.IsNotNull(productLoaded2);
 
             ShoppingCart cart2 = new ShoppingCart(orderId, productLoaded2.Id, productLoaded2.Name, productLoaded2.Price, 3);
-            Assert.IsTrue(cart2.IsLimitProduct(productLoaded2.Remain));
+            CartResult result2 = cart2.IsLimitProduct(productLoaded2.Remain);
+            Assert.IsTrue(result2.Success);
+            Assert.AreEqual("庫存足夠", result2.Message);
+          
             cart2.AddToCart();
 
             //save
-            Assert.IsTrue(cart2.SaveFromCart());
+            CartResult result3 = cart2.SaveFromCart();
+            Assert.IsTrue(result3.Success);
+            Assert.AreEqual("購物車結帳成功", result3.Message);
 
             //get cartinfo from table orderDetail
             ShoppingCart[] cartlist = ShoppingCart.GetCartByOrderId(orderId);
@@ -218,10 +247,16 @@ namespace team3
             Assert.IsNotNull(productLoaded);
 
             ShoppingCart cart = new ShoppingCart(1, productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            Assert.IsTrue(cart.IsLimitProduct(productLoaded.Remain));
+            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
+            Assert.IsTrue(result.Success);
+            Assert.AreEqual("庫存足夠", result.Message);
+          
             cart.AddToCart();
             cart.empty_cart();
-            Assert.IsFalse(cart.SaveFromCart());
+          
+            CartResult result2 = cart.SaveFromCart();
+            Assert.IsFalse(result2.Success);
+            Assert.AreEqual("購物車內無商品", result2.Message);
         }
     }
 }

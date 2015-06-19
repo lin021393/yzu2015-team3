@@ -7,7 +7,11 @@ using System.Data.SQLite;
 
 namespace team3
 {
-
+    class CartResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; }
+    }
     class ShoppingCart
     {
         private long _id;
@@ -109,11 +113,11 @@ namespace team3
             return this.Id > 0 && this.isDirty == false;
         }
 
-        public bool IsLimitProduct(long productremain)
+        public CartResult IsLimitProduct(long productremain)
         {
             if (productremain < this.Quantity)
-                return false;
-            return true;
+                return new CartResult { Success = false, Message = "購買商品數量超出庫存" };
+            return new CartResult { Success = true, Message = "庫存足夠" }; ;
         }
 
         public void AddToCart()
@@ -128,10 +132,10 @@ namespace team3
             return listCart;
         }
 
-        public bool SaveDirectly()
+        public CartResult SaveDirectly()
         {
             if (IsSaved())
-                return true;
+                return new CartResult { Success = true, Message = "單品結帳成功" };
             try
             {
 
@@ -164,7 +168,10 @@ namespace team3
                     DatabaseConnection.RemoveConnection(con);
                     this.isDirty = false;
 
-                    return this.Id > 0;
+                    if (this.Id > 0)
+                        return new CartResult { Success = true, Message = "單品結帳成功" };
+                    else
+                        return new CartResult { Success = false, Message = "單品結帳失敗" };
                 }
                 else
                 {
@@ -186,7 +193,7 @@ namespace team3
                     int res = cmd.ExecuteNonQuery();
                     this.isDirty = false;
                     DatabaseConnection.RemoveConnection(con);
-                    return true;
+                    return new CartResult { Success = true, Message = "單品結帳成功" };
 
                 }
 
@@ -195,14 +202,14 @@ namespace team3
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new CartResult { Success = false, Message = "資料庫存取失敗" };
             }
         }
 
-        public bool SaveFromCart()
+        public CartResult SaveFromCart()
         {
             if (isEmpty)
-                return false;
+                return new CartResult { Success = false, Message = "購物車內無商品" };
             try
             {
 
@@ -237,7 +244,7 @@ namespace team3
                         listCart[i].isDirty = false;
 
                         if (listCart[i].Id <= 0)
-                            return false;
+                            return new CartResult { Success = false, Message = "購物車結帳失敗" };
                     }
                     else
                     {
@@ -264,13 +271,13 @@ namespace team3
                 }
 
                 DatabaseConnection.RemoveConnection(con);
-                return true;
+                return new CartResult { Success = true, Message = "購物車結帳成功" };
 
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return false;
+                return new CartResult { Success = false, Message = "資料庫存取失敗" };
             }
         }
         public static ShoppingCart[] GetCartByOrderId(long OrderId)
