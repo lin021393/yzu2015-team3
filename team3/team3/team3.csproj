@@ -63,6 +63,7 @@
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="OrderInfo.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductTest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -76,6 +77,7 @@
     <Compile Include="DataBaseConnectionTest.cs" />
     <Compile Include="ShoppingCartTest.cs" />
     <Compile Include="CategoryLinkTest.cs" />
+    <Compile Include="OrderInfoTest.cs" />
     <Compile Include="UserTest.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

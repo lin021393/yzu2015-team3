@@ -71,6 +71,22 @@ namespace team3
 
             cmd.ExecuteNonQuery();
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [order] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [total] INTEGER ,
+                                    [deliverFee] INTEGER ,
+                                    [grandTotal] INTEGER ,
+                                    [customerName] TEXT ,
+                                    [customerAddress] TEXT,
+                                    [customerPhone] TEXT,
+                                    [receiveName] TEXT ,
+                                    [receiveAddress] TEXT,
+                                    [receivePhone] TEXT,
+                                    [payType] TEXT, 
+                                    [receiveType] TEXT) ;";
+
+            cmd.ExecuteNonQuery();
+
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [orderDetail] (
                                     [id] INTEGER PRIMARY KEY ,
                                     [orderId] INTEGER ,
@@ -81,6 +97,7 @@ namespace team3
                                     [total] INTEGER) ;";//FOREIGN KEY(orderId) REFERENCES order(id)
 
             cmd.ExecuteNonQuery();
+
 
             RemoveConnection(con);
 

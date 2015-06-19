@@ -15,7 +15,6 @@ namespace team3
     class ShoppingCart
     {
         private long _id;
-        private long _orderid;
         private long _productid;
         private string _productname = "";
         private long _unitprice ;
@@ -26,10 +25,9 @@ namespace team3
         private static int count = 0;
         private static List<ShoppingCart> listCart = new List<ShoppingCart>();
 
-        public ShoppingCart(long orderid, long productid, string productname, long unitprice, long quantity, long total = 0)
+        public ShoppingCart( long productid, string productname, long unitprice, long quantity, long total = 0)
         {
             this.Id = 0;
-            this.Orderid = orderid;
             this.Productid = productid;
             this.Productname = productname;
             this.Unitprice = unitprice;
@@ -39,10 +37,9 @@ namespace team3
             isEmpty = false;
         }
 
-        private ShoppingCart(long id, long orderid, long productid, string productname, long unitprice, long quantity, long total=0)
+        private ShoppingCart(long id, long productid, string productname, long unitprice, long quantity, long total=0)
         {
             this.Id = id;
-            this.Orderid = orderid;
             this.Productid = productid;
             this.Productname = productname;
             this.Unitprice = unitprice;
@@ -58,11 +55,6 @@ namespace team3
             internal set { this._id = value; }
         }
 
-        public long Orderid
-        {
-            get { return this._orderid; }
-            set { this._orderid = value; this.isDirty = true; }
-        }
 
         public long Productid
         {
@@ -94,10 +86,15 @@ namespace team3
             set { this._total = value; this.isDirty = true; }
         }
 
+        public static int Count
+        {
+            get { return count; }
+            set { count = value; }
+        }
+
         public void empty_cart()
         {
             this.Id = 0;
-            this.Orderid = 0;
             this.Productid = 0;
             this.Productname = "";
             this.Unitprice = 0;
@@ -122,7 +119,7 @@ namespace team3
 
         public void AddToCart()
         {
-            ShoppingCart temp = new ShoppingCart(this.Orderid, this.Productid, this.Productname, this.Unitprice, this.Quantity, this.Total);
+            ShoppingCart temp = new ShoppingCart(this.Productid, this.Productname, this.Unitprice, this.Quantity, this.Total);
             count++;
             listCart.Add(temp);
         }
@@ -132,7 +129,7 @@ namespace team3
             return listCart;
         }
 
-        public CartResult SaveDirectly()
+        public CartResult SaveDirectly(long orderId)
         {
             if (IsSaved())
                 return new CartResult { Success = true, Message = "單品結帳成功" };
@@ -153,7 +150,7 @@ namespace team3
                                 [total]
                                ) VALUES ( @orderId, @productId, @productName, @unitPrice, @quantity, @total )";
 
-                    cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = this.Orderid, });
+                    cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
                     cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = this.Productid, });
                     cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = this.Productname, });
                     cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = this.Unitprice, });
@@ -169,9 +166,9 @@ namespace team3
                     this.isDirty = false;
 
                     if (this.Id > 0)
-                        return new CartResult { Success = true, Message = "單品結帳成功" };
+                        return new CartResult { Success = true, Message = "單品儲存成功" };
                     else
-                        return new CartResult { Success = false, Message = "單品結帳失敗" };
+                        return new CartResult { Success = false, Message = "單品儲存失敗" };
                 }
                 else
                 {
@@ -183,7 +180,7 @@ namespace team3
                                             [remain] = @remain 
                                         WHERE [id] = @id";
 
-                    cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = this.Orderid, });
+                    cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
                     cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = this.Productid, });
                     cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = this.Productname, });
                     cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = this.Unitprice, });
@@ -193,7 +190,7 @@ namespace team3
                     int res = cmd.ExecuteNonQuery();
                     this.isDirty = false;
                     DatabaseConnection.RemoveConnection(con);
-                    return new CartResult { Success = true, Message = "單品結帳成功" };
+                    return new CartResult { Success = true, Message = "單品儲存成功" };
 
                 }
 
@@ -206,7 +203,7 @@ namespace team3
             }
         }
 
-        public CartResult SaveFromCart()
+        public CartResult SaveFromCart(long orderId)
         {
             if (isEmpty)
                 return new CartResult { Success = false, Message = "購物車內無商品" };
@@ -229,7 +226,7 @@ namespace team3
                                 [total]
                                ) VALUES ( @orderId, @productId, @productName, @unitPrice, @quantity, @total )";
 
-                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = listCart[i].Orderid, });
+                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
                         cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = listCart[i].Productid, });
                         cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = listCart[i].Productname, });
                         cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = listCart[i].Unitprice, });
@@ -244,7 +241,7 @@ namespace team3
                         listCart[i].isDirty = false;
 
                         if (listCart[i].Id <= 0)
-                            return new CartResult { Success = false, Message = "購物車結帳失敗" };
+                            return new CartResult { Success = false, Message = "購物車商品儲存失敗" };
                     }
                     else
                     {
@@ -257,7 +254,7 @@ namespace team3
                                             [total] = @total 
                                         WHERE [id] = @id";
 
-                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = listCart[i].Orderid, });
+                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
                         cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = listCart[i].Productid, });
                         cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = listCart[i].Productname, });
                         cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = listCart[i].Unitprice, });
@@ -271,7 +268,7 @@ namespace team3
                 }
 
                 DatabaseConnection.RemoveConnection(con);
-                return new CartResult { Success = true, Message = "購物車結帳成功" };
+                return new CartResult { Success = true, Message = "購物車商品儲存成功" };
 
             }
             catch (Exception ex)
@@ -296,7 +293,6 @@ namespace team3
             while (reader.Read())
             {
                     cart[idx] = new ShoppingCart((long)reader["id"],
-                                        (long)reader["orderId"],
                                         (long)reader["productId"],
                                         reader["productName"] as String,
                                         (long)reader["unitPrice"],
