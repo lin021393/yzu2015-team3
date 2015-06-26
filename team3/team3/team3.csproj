@@ -65,6 +65,7 @@
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="HashUtil.cs" />
     <Compile Include="Main.cs" />
+    <Compile Include="OrderDetail.cs" />
     <Compile Include="OrderInfo.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="ProductTest.cs" />

@@ -14,6 +14,7 @@ namespace team3
     }
     class OrderInfo
     {
+        
         private long _id;
         private long _total;
         private long _deliverfee;
@@ -26,7 +27,10 @@ namespace team3
         private string _receivephone = "";
         private string _paytype = "";
         private string _receivetype = "";
+        private List<OrderDetail> _details = new List<OrderDetail>();
+        
         private bool isDirty = false;
+
 
 
         public OrderInfo(long total, long deliverfee,  string customername, string customeraddress, string customerphone, string receivename, string receiveaddress, string receivephone, string paytype, string receivetype, long grandtotal=0)
@@ -43,6 +47,7 @@ namespace team3
             this.Receivephone = receivephone;
             this.Paytype = paytype;
             this.Receivetype = receivetype;
+            this._details = OrderDetail.getDetailsByOrderId(Id);
             isDirty = false;
         }
 
@@ -60,6 +65,8 @@ namespace team3
             this.Receivephone = receivephone;
             this.Paytype = paytype;
             this.Receivetype = receivetype;
+            this._details = OrderDetail.getDetailsByOrderId(Id);
+            
             isDirty = false;
         }
 
@@ -135,10 +142,16 @@ namespace team3
             set { this._receivetype = value; this.isDirty = true; }
         }
 
-        public static long CaculateTotal(List<ShoppingCart> cart,int count)
+        public List<OrderDetail> Details
+        {
+            get { return this._details; }
+            internal set { this._details = value ; }
+        }
+
+        public static long CaculateTotal(List<ShoppingCart> cart, int count)
         {
             long sum = 0;
-            for(int i=0 ; i<count ; i++)
+            for (int i = 0; i < count; i++)
             {
                 sum += cart[i].Total;
             }
@@ -244,6 +257,41 @@ namespace team3
                 return new OrderResult { Success = false, Message = "資料庫存取失敗" }; ;
             }
 
+        }
+
+        public static OrderInfo getOrderInfoById(long OrederId)
+        {
+            SQLiteConnection con = DatabaseConnection.GetConnection();
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"SELECT * 
+                                FROM [order]
+                                WHERE [id] = @id";
+            cmd.Parameters.Add(new SQLiteParameter("@id") { Value = OrederId, });
+            SQLiteDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                OrderInfo order = new OrderInfo((long)reader["id"],
+                                                (long)reader["total"],
+                                                (long)reader["deliverFee"],
+                                                reader["customerName"] as string,
+                                                reader["customerAddress"] as string,
+                                                reader["customerPhone"] as string,
+                                                reader["receiveName"] as string,
+                                                reader["receiveAddress"] as string,
+                                                reader["receivePhone"] as string,
+                                                reader["payType"] as string,
+                                                reader["receiveType"] as string,
+                                                (long)reader["grandTotal"]);
+
+                DatabaseConnection.RemoveConnection(con);
+                return order;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

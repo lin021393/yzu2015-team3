@@ -29,6 +29,7 @@ namespace team3
             Product productLoaded = Product.GetProductById(product.Id);
             Assert.IsNotNull(productLoaded);
             
+            /*
             ShoppingCart cart = new ShoppingCart(productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
             CartResult result = cart.IsLimitProduct(productLoaded.Remain);
             Assert.IsTrue(result.Success);
@@ -68,7 +69,7 @@ namespace team3
             Assert.IsTrue(result4.Success);
             Assert.AreEqual("購物車商品儲存成功", result4.Message);
             //以上是利用資料表order的Id  將不同商品分別存在orderDetail資料表(若orderId相同則為同一筆訂單)
-            cart2.empty_cart();
+            cart2.empty_cart();*/
         }
     }
 }

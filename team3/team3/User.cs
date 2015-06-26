@@ -43,6 +43,8 @@ namespace team3
         private string _email = "";
         private string _password = "";
         private bool isDirty = false;
+        private List<ShoppingCart> _carts = new List<ShoppingCart>();
+
         
         private User(long Id, string Account, string Email, string Password)
         {
@@ -50,6 +52,7 @@ namespace team3
             this._account = Account;
             this._email = Email;
             this._password = Password;
+            this._carts = ShoppingCart.GetCartsByUserId(Id);
             this.isDirty = false;
         }
 
@@ -99,6 +102,26 @@ namespace team3
             {
                 return false;
             }
+        }
+        
+        public List<ShoppingCart> Carts
+        {
+            get { return this._carts;  }
+        }
+
+        public CartResult addProductToCards(Product product, int Quantity)
+        {
+            if ( product.Remain < Quantity )
+                return new CartResult{ Message = "庫存不足", Success = false};
+
+            ShoppingCart item = new ShoppingCart(this.ID, product.Id, product.Name, product.Price, Quantity);
+            item.Save();
+            this.Carts.Add(item);
+
+            product.Remain -= Quantity;
+            product.Save();
+
+            return new CartResult{ Message = "新增成功", Success = true };
         }
 
         public bool Save()

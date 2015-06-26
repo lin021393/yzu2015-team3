@@ -92,6 +92,16 @@ namespace team3
 
             cmd.ExecuteNonQuery();
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [shopCartDetail] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [userId] INTEGER ,
+                                    [productId] INTEGER ,
+                                    [productName] TEXT ,
+                                    [unitPrice] INTEGER ,
+                                    [quantity] INTEGER ,
+                                    [total] INTEGER) ;";//FOREIGN KEY(orderId) REFERENCES order(id)
+            cmd.ExecuteNonQuery();
+
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [orderDetail] (
                                     [id] INTEGER PRIMARY KEY ,
                                     [orderId] INTEGER ,
