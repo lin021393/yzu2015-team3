@@ -57,6 +57,8 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Administrator.cs" />
+    <Compile Include="AdministratorTest.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="CategoryLink.cs" />
     <Compile Include="CategoryTest.cs" />

@@ -71,6 +71,11 @@ namespace team3
 
             cmd.ExecuteNonQuery();
 
+            cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [administrators] (
+                                    [id] INTEGER PRIMARY KEY ,
+                                    [account] TEXT NOT NULL UNIQUE);";
+
+            cmd.ExecuteNonQuery();
             cmd.CommandText = @"CREATE TABLE IF NOT EXISTS [order] (
                                     [id] INTEGER PRIMARY KEY ,
                                     [total] INTEGER ,
