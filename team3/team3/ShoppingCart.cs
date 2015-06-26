@@ -21,9 +21,7 @@ namespace team3
         private string _productname = "";
         private long _unitprice ;
         private long _quantity;
-        private long _total;
         private bool isDirty = false;
-        private bool isEmpty = false;
         private static int count = 0;
      
 
@@ -35,9 +33,7 @@ namespace team3
             this.Productname = productname;
             this.Unitprice = unitprice;
             this.Quantity = quantity;
-            this.Total = unitprice * quantity;
             isDirty = false;
-            isEmpty = false;
         }
 
         private ShoppingCart(long id, long user_id, long productid, string productname, long unitprice, long quantity, long total = 0)
@@ -48,9 +44,7 @@ namespace team3
             this.Productname = productname;
             this.Unitprice = unitprice;
             this.Quantity = quantity;
-            this.Total = unitprice * quantity;
             isDirty = false;
-            isEmpty = false;
         }
 
         public long Id
@@ -89,12 +83,6 @@ namespace team3
             set { this._quantity = value; this.isDirty = true; }
         }
 
-        public long Total
-        {
-            get { return this._total; }
-            set { this._total = value; this.isDirty = true; }
-        }
-
         public static int Count
         {
             get { return count; }
@@ -128,15 +116,13 @@ namespace team3
                                 [productName], 
                                 [unitPrice],
                                 [quantity],
-                                [total]
-                               ) VALUES ( @userId, @productId, @productName, @unitPrice, @quantity, @total )";
+                               ) VALUES ( @userId, @productId, @productName, @unitPrice, @quantity )";
 
                     cmd.Parameters.Add(new SQLiteParameter("@userId") { Value = UserId, });
                     cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = this.Productid, });
                     cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = this.Productname, });
                     cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = this.Unitprice, });
                     cmd.Parameters.Add(new SQLiteParameter("@quantity") { Value = this.Quantity, });
-                    cmd.Parameters.Add(new SQLiteParameter("@total") { Value = this.Total, });
                     cmd.ExecuteNonQuery();
 
                     string sql = "SELECT last_insert_rowid()";
@@ -153,31 +139,25 @@ namespace team3
                 }
                 else
                 {
-                   /* cmd.CommandText = @"UPDATE [products]
-                                        SET [name] = @name ,
-                                            [price] = @price ,
-                                            [imgUrl] = @imgUrl ,
-                                            [description] = @description ,
-                                            [remain] = @remain 
+                    cmd.CommandText = @"UPDATE [shopCartDetail]
+                                        SET [userId] = @userId ,
+                                            [productId] = @productId ,
+                                            [productName] = @productName ,
+                                            [unitPrice] = @unitPrice ,
+                                            [quantity] = @quantity 
                                         WHERE [id] = @id";
 
-                    cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
+                    cmd.Parameters.Add(new SQLiteParameter("@userId") { Value = UserId, });
                     cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = this.Productid, });
                     cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = this.Productname, });
                     cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = this.Unitprice, });
                     cmd.Parameters.Add(new SQLiteParameter("@quantity") { Value = this.Quantity, });
-                    cmd.Parameters.Add(new SQLiteParameter("@total") { Value = this.Total, });
                     cmd.Parameters.Add(new SQLiteParameter("@id") { Value = this.Id, });
                     int res = cmd.ExecuteNonQuery();
                     this.isDirty = false;
                     DatabaseConnection.RemoveConnection(con);
                     return new CartResult { Success = true, Message = "單品儲存成功" };
-                    */
-
-                    return new CartResult { Success = true, Message = "單品儲存成功" };
-                    
                 }
-
 
             }
             catch (Exception ex)
@@ -187,83 +167,7 @@ namespace team3
             }
         }
 
-        public CartResult SaveFromCart(long orderId)
-        {
-           /* if (isEmpty)
-                return new CartResult { Success = false, Message = "購物車內無商品" };
-            try
-            {
-
-                SQLiteConnection con = DatabaseConnection.GetConnection();
-                SQLiteCommand cmd = con.CreateCommand();
-
-                for (int i = 0; i < count; i++)
-                {
-                    if (listCart[i].Id == 0)
-                    {
-                        cmd.CommandText = @"INSERT INTO [orderDetail] (
-                                [orderId], 
-                                [productId],
-                                [productName], 
-                                [unitPrice],
-                                [quantity],
-                                [total]
-                               ) VALUES ( @orderId, @productId, @productName, @unitPrice, @quantity, @total )";
-
-                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
-                        cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = listCart[i].Productid, });
-                        cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = listCart[i].Productname, });
-                        cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = listCart[i].Unitprice, });
-                        cmd.Parameters.Add(new SQLiteParameter("@quantity") { Value = listCart[i].Quantity, });
-                        cmd.Parameters.Add(new SQLiteParameter("@total") { Value = listCart[i].Total, });
-                        cmd.ExecuteNonQuery();
-
-                        string sql = "SELECT last_insert_rowid()";
-                        cmd = new SQLiteCommand(sql, con);
-
-                        listCart[i].Id = (long)cmd.ExecuteScalar();
-                        listCart[i].isDirty = false;
-
-                        if (listCart[i].Id <= 0)
-                            return new CartResult { Success = false, Message = "購物車商品儲存失敗" };
-                    }
-                    else
-                    {
-                        cmd.CommandText = @"UPDATE [orderDetail]
-                                        SET [orderId] = @orderId ,
-                                            [productId] = @productId ,
-                                            [productName] = @productName ,
-                                            [unitPrice] = @unitPrice ,
-                                            [quantity] = @quantity ,
-                                            [total] = @total 
-                                        WHERE [id] = @id";
-
-                        cmd.Parameters.Add(new SQLiteParameter("@orderId") { Value = orderId, });
-                        cmd.Parameters.Add(new SQLiteParameter("@productId") { Value = listCart[i].Productid, });
-                        cmd.Parameters.Add(new SQLiteParameter("@productName") { Value = listCart[i].Productname, });
-                        cmd.Parameters.Add(new SQLiteParameter("@unitPrice") { Value = listCart[i].Unitprice, });
-                        cmd.Parameters.Add(new SQLiteParameter("@quantity") { Value = listCart[i].Quantity, });
-                        cmd.Parameters.Add(new SQLiteParameter("@total") { Value = listCart[i].Total, });
-                        cmd.Parameters.Add(new SQLiteParameter("@id") { Value = listCart[i].Id, });
-                        int res = cmd.ExecuteNonQuery();
-                        listCart[i].isDirty = false;
-
-                    }
-                }
-
-                DatabaseConnection.RemoveConnection(con);
-                return new CartResult { Success = true, Message = "購物車商品儲存成功" };
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new CartResult { Success = false, Message = "資料庫存取失敗" };
-            }*/
-            return new CartResult { Success = false, Message = "資料庫存取失敗" };
-
-        }
-
+       
         public static void ClearCarts(long UserId)
         {
             SQLiteConnection con = DatabaseConnection.GetConnection();

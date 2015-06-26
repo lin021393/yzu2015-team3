@@ -158,16 +158,6 @@ namespace team3
             }
         }
 
-        public static long CaculateTotal(List<ShoppingCart> cart, int count)
-        {
-            long sum = 0;
-            for (int i = 0; i < count; i++)
-            {
-                sum += cart[i].Total;
-            }
-            return sum;
-        }
-
         public bool IsSaved()
         {
             return this.Id > 0 && this.isDirty == false;

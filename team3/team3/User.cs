@@ -126,9 +126,13 @@ namespace team3
 
         public OrderInfo BuyFromCarts()
         {
-            OrderInfo order = new OrderInfo(0, "", "", "", "", "", "", "", "");
-            order.addDetails(this.Carts);
-            order.Save();
+            OrderInfo order = null;
+            if( Carts.Count > 0)
+            {
+                order = new OrderInfo(0, "", "", "", "", "", "", "", "");
+                order.addDetails(this.Carts);
+                order.Save();
+            }
             return order;
         }
 
