@@ -108,8 +108,7 @@ namespace team3
                                     [productId] INTEGER ,
                                     [productName] TEXT ,
                                     [unitPrice] INTEGER ,
-                                    [quantity] INTEGER ,
-                                    [total] INTEGER) ;";//FOREIGN KEY(orderId) REFERENCES order(id)
+                                    [quantity] INTEGER);";//FOREIGN KEY(orderId) REFERENCES order(id)
 
             cmd.ExecuteNonQuery();
 

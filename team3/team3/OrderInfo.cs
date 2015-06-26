@@ -33,12 +33,11 @@ namespace team3
 
 
 
-        public OrderInfo(long total, long deliverfee,  string customername, string customeraddress, string customerphone, string receivename, string receiveaddress, string receivephone, string paytype, string receivetype, long grandtotal=0)
+        public OrderInfo(long deliverfee,  string customername, string customeraddress, string customerphone, string receivename, string receiveaddress, string receivephone, string paytype, string receivetype, long grandtotal=0)
         {
             this.Id = 0;
-            this.Total = total;
             this.Deliverfee = deliverfee;
-            this.Grandtotal = total + deliverfee;
+            this.Grandtotal = deliverfee;
             this.Customername = customername;
             this.Customeraddress = customeraddress;
             this.Customerphone = customerphone;
@@ -47,7 +46,6 @@ namespace team3
             this.Receivephone = receivephone;
             this.Paytype = paytype;
             this.Receivetype = receivetype;
-            this._details = OrderDetail.getDetailsByOrderId(Id);
             isDirty = false;
         }
 
@@ -56,7 +54,7 @@ namespace team3
             this.Id = id;
             this.Total = total;
             this.Deliverfee = deliverfee;
-            this.Grandtotal = total + deliverfee;
+            this.Grandtotal = deliverfee;
             this.Customername = customername;
             this.Customeraddress = customeraddress;
             this.Customerphone = customerphone;
@@ -146,6 +144,18 @@ namespace team3
         {
             get { return this._details; }
             internal set { this._details = value ; }
+        }
+
+        public void addDetails(List<ShoppingCart> carts)
+        {
+            foreach(ShoppingCart cart in carts)
+            {
+                OrderDetail item = new OrderDetail(this.Id, cart.Productid, cart.Quantity);
+                this.Total += cart.Unitprice;
+                this.Grandtotal = Total + this.Deliverfee;
+                item.Save();
+                this._details.Add(item);
+            }
         }
 
         public static long CaculateTotal(List<ShoppingCart> cart, int count)

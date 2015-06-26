@@ -69,7 +69,7 @@ namespace team3
            
             
         }
-        /* [TestMethod]
+        [TestMethod]
          public void TestBuyItFromCart()//從購物車結帳
          {
             
@@ -81,42 +81,22 @@ namespace team3
                       "潮到滴水",
                       99
                  );
-             Assert.IsTrue(product.Save());
-             Product productLoaded = Product.GetProductById(product.Id);
-             Assert.IsNotNull(productLoaded);
 
-             ShoppingCart cart = new ShoppingCart(productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-             CartResult result = cart.IsLimitProduct(productLoaded.Remain);
-             Assert.IsTrue(result.Success);
-             Assert.AreEqual("庫存足夠", result.Message);
-           
-             cart.AddToCart();
-             //
-             Product product2 = new Product(
-                      "Nokia 3310",
-                      1000,
-                      "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg",
-                      "地表最強手機!!!!!!",
-                      99
-                 );
-             Assert.IsTrue(product2.Save());
-             Product productLoaded2 = Product.GetProductById(product2.Id);
-             Assert.IsNotNull(productLoaded2);
+             product.Save();
+
+             AuthResult regResult = User.Register("testaccountQQ", "MNHUOKJHBNKUH", "MNHUOKJHBNKUH", "exa2eweweemple@gmail.com");
+             User user = regResult.User;
+             AuthResult loginRes = User.Login("testaccountQQ", "MNHUOKJHBNKUH");
+             user = loginRes.User;
 
 
-             ShoppingCart cart2 = new ShoppingCart(productLoaded2.Id, productLoaded2.Name, productLoaded2.Price, 3);
-             CartResult result2 = cart2.IsLimitProduct(productLoaded2.Remain);
-             Assert.IsTrue(result2.Success);
-             Assert.AreEqual("庫存足夠", result2.Message);
-           
-             cart2.AddToCart();
+             CartResult res = user.addProductToCards(product, 1);
 
-             CartResult result3 = cart2.SaveFromCart(orderId);
-             Assert.IsTrue(result3.Success);
-             Assert.AreEqual("購物車商品儲存成功", result3.Message);
-             cart2.empty_cart();
+             OrderInfo order = user.BuyFromCarts();
 
+             Assert.AreEqual(19990, order.Total);
          }
+        /*
          [TestMethod]
          public void TestGetCartByOrderId()//藉由orderId從DB撈出同樣orderId所有的購買商品資訊
          {

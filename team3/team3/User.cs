@@ -124,6 +124,19 @@ namespace team3
             return new CartResult{ Message = "新增成功", Success = true };
         }
 
+        public OrderInfo BuyFromCarts()
+        {
+            OrderInfo order = new OrderInfo(0, "", "", "", "", "", "", "", "");
+            order.addDetails(this.Carts);
+            order.Save();
+            return order;
+        }
+
+        public void ClearCarts()
+        {
+            ShoppingCart.ClearCarts(this.ID);
+        }
+
         public bool Save()
         {
             if (!isDirty)

@@ -101,23 +101,15 @@ namespace team3
             set { count = value; }
         }
 
-        public void empty_cart()
-        {
-            this.Id = 0;
-            this.Productid = 0;
-            this.Productname = "";
-            this.Unitprice = 0;
-            this.Quantity = 0;
-            this.Total = 0;
-            this.isEmpty = true;
-            count = 0;
-        }
 
         public bool IsSaved()
         {
             return this.Id > 0 && this.isDirty == false;
         }
        
+
+
+
         public CartResult Save()
         {
             if (IsSaved())
@@ -271,6 +263,20 @@ namespace team3
             return new CartResult { Success = false, Message = "資料庫存取失敗" };
 
         }
+
+        public static void ClearCarts(long UserId)
+        {
+            SQLiteConnection con = DatabaseConnection.GetConnection();
+            SQLiteCommand cmd = con.CreateCommand();
+
+            cmd.CommandText = @"DELETE FROM [shopCartDetail] WHERE [userId] = @userId";
+            cmd.Parameters.Add(new SQLiteParameter("@userId") { Value = UserId, });
+            int rows = cmd.ExecuteNonQuery();
+
+            DatabaseConnection.RemoveConnection(con);
+
+        }
+
         public static List<ShoppingCart> GetCartsByUserId(long UserId)
         {
             SQLiteConnection con = DatabaseConnection.GetConnection();
