@@ -114,6 +114,28 @@ namespace team3
             Assert.IsFalse(regResult10.Result);
 
         }
+
+        [TestMethod]
+        public void LoginTest()
+        {
+            
+            AuthResult regResult = User.Register("testaccountQQ", "MNHUOKJHBNKUH", "MNHUOKJHBNKUH", "exa2eweweemple@gmail.com");
+
+            User user = regResult.User;
+
+            /* 錯誤的帳號密碼 */
+            AuthResult loginRes = User.Login("testaccountQQ", "wrong password");
+
+            Assert.IsFalse(loginRes.Result);
+            /* 正確帳號密碼 */
+            loginRes = User.Login("testaccountQQ", "MNHUOKJHBNKUH");
+
+            Assert.IsTrue(loginRes.Result);
+            
+
+        }
+
+
         [TestMethod]
         public void EditUserEmail()
         {
