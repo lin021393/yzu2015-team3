@@ -136,6 +136,21 @@ namespace team3
             return order;
         }
 
+        public OrderInfo buyFromProduct(long productID, int Quantity)
+        {
+            Product product = Product.GetProductById(productID);
+           
+            OrderInfo order = null;
+
+            if (product != null && product.Remain > Quantity)
+            {
+                order = new OrderInfo(0, "", "", "", "", "", "", "", "");
+                order.addDetail(product, Quantity);
+            }
+
+            return order;
+        }
+
         public void ClearCarts()
         {
             ShoppingCart.ClearCarts(this.ID);

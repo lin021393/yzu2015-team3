@@ -16,7 +16,36 @@ namespace team3
             DatabaseConnection.Init();
         }
         [TestMethod]
-        public void TestAddOrderInfo()
+        public void TestBuyItFromCart()//從購物車結帳
+        {
+
+            int orderId = 2;//is foreign key for table [orderDetail] and is primary key for table [訂單資訊]
+            Product product = new Product(
+                     "IPHONE 7",
+                     19990,
+                     "http://img.technews.tw/wp-content/uploads/2015/06/15233374520_abea3a452a_z-624x416.jpg",
+                     "潮到滴水",
+                     99
+                );
+
+            product.Save();
+
+            AuthResult regResult = User.Register("testaccountQQ", "MNHUOKJHBNKUH", "MNHUOKJHBNKUH", "exa2eweweemple@gmail.com");
+            User user = regResult.User;
+            AuthResult loginRes = User.Login("testaccountQQ", "MNHUOKJHBNKUH");
+            user = loginRes.User;
+
+
+            CartResult res = user.addProductToCards(product, 1);
+
+            OrderInfo order = user.BuyFromCarts();
+
+            Assert.AreEqual(1, order.Details.Count);
+            Assert.AreEqual(19990, order.Total);
+        }
+
+        [TestMethod]
+        public void TestBuyDirectly()
         {
             Product product = new Product(
                      "IPHONE 7",
@@ -25,51 +54,44 @@ namespace team3
                      "潮到滴水",
                      99
                 );
-            Assert.IsTrue(product.Save());
-            Product productLoaded = Product.GetProductById(product.Id);
-            Assert.IsNotNull(productLoaded);
-            
-            /*
-            ShoppingCart cart = new ShoppingCart(productLoaded.Id, productLoaded.Name, productLoaded.Price, 1);
-            CartResult result = cart.IsLimitProduct(productLoaded.Remain);
-            Assert.IsTrue(result.Success);
-            Assert.AreEqual("庫存足夠", result.Message);
+            product.Save();
 
-            cart.AddToCart();
-            //以上是第一筆購物資訊先加入購物車
-            Product product2 = new Product(
-                    "Nokia 3310",
-                    1000,
-                    "http://p1-news.yamedia.tw/NTAyMjY3bmV3cw==/55950483e199d61f.jpg",
-                    "地表最強手機!!!!!!",
-                    99
-               );
-            Assert.IsTrue(product2.Save());
-            Product productLoaded2 = Product.GetProductById(product2.Id);
-            Assert.IsNotNull(productLoaded2);
 
-            ShoppingCart cart2 = new ShoppingCart(productLoaded2.Id, productLoaded2.Name, productLoaded2.Price, 3);
-            CartResult result2 = cart2.IsLimitProduct(productLoaded2.Remain);
-            Assert.IsTrue(result2.Success);
-            Assert.AreEqual("庫存足夠", result2.Message);
+            AuthResult regResult = User.Register("testaccountQQ", "MNHUOKJHBNKUH", "MNHUOKJHBNKUH", "exa2eweweemple@gmail.com");
+            User user = regResult.User;
+            AuthResult loginRes = User.Login("testaccountQQ", "MNHUOKJHBNKUH");
+            user = loginRes.User;
 
-            cart2.AddToCart();
-            //以上是第二筆購物資訊先加入購物車
-           
-            List<ShoppingCart> cartLoaded = ShoppingCart.GetCartInfo();
-            long total = OrderInfo.CaculateTotal(cartLoaded, ShoppingCart.Count);//算出購物車內商品的總和(丟進去購物車內的商品資訊&商品數目)
-            long deliverfee=100;//運費100
-            OrderInfo orderinfo = new OrderInfo(total, deliverfee, "Kevin", "桃園市中壢區遠東路135號", "0912345678", "David", "桃園市中壢區元智大學","0987654321", "ATM轉帳", "郵局包裹");
-            OrderResult result3 = orderinfo.Save();
-            Assert.IsTrue(result3.Success);
-            Assert.AreEqual("訂單儲存成功", result3.Message);
-            //以上是先取出購物車內的商品資訊(取得總金額) 先建立訂單並存在order資料表 
 
-            CartResult result4 = cart2.SaveFromCart(orderinfo.Id);
-            Assert.IsTrue(result4.Success);
-            Assert.AreEqual("購物車商品儲存成功", result4.Message);
-            //以上是利用資料表order的Id  將不同商品分別存在orderDetail資料表(若orderId相同則為同一筆訂單)
-            cart2.empty_cart();*/
+            OrderInfo order = user.buyFromProduct(product.Id, 1);
+            Assert.IsNotNull(order);
+
+            OrderInfo order2 = user.buyFromProduct(product.Id, 100);
+            Assert.IsNull(order2);
+
+        }
+
+        [TestMethod]
+        public void TestBuyEmptyCart()//測試購物車為空的時候不能購買
+        {
+            Product product = new Product(
+                     "IPHONE 6S",
+                     19990,
+                     "http://img.technews.tw/wp-content/uploads/2015/06/15233374520_abea3a452a_z-624x416.jpg",
+                     "潮到滴水",
+                     99
+                );
+            product.Save();
+
+            AuthResult regResult = User.Register("testaccountQQ", "MNHUOKJHBNKUH", "MNHUOKJHBNKUH", "exa2eweweemple@gmail.com");
+            User user = regResult.User;
+            AuthResult loginRes = User.Login("testaccountQQ", "MNHUOKJHBNKUH");
+            user = loginRes.User;
+
+            user.ClearCarts();
+
+            Assert.IsNull(user.BuyFromCarts());
+
         }
     }
 }

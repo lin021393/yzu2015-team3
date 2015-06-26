@@ -151,11 +151,20 @@ namespace team3
             foreach(ShoppingCart cart in carts)
             {
                 OrderDetail item = new OrderDetail(this.Id, cart.Productid, cart.Quantity);
-                this.Total += cart.Unitprice;
+                this.Total += cart.Unitprice*cart.Quantity ;
                 this.Grandtotal = Total + this.Deliverfee;
                 item.Save();
                 this._details.Add(item);
             }
+        }
+
+        public void addDetail(Product product, int Quantity)
+        {
+            OrderDetail item = new OrderDetail(this.Id, product.Id, Quantity);
+            this.Total += product.Price * Quantity;
+            this.Grandtotal = Total + this.Deliverfee;
+            item.Save();
+            this._details.Add(item);
         }
 
         public bool IsSaved()
